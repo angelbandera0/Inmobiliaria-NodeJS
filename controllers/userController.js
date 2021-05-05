@@ -32,9 +32,9 @@ const userPost = async (req, res = response) => {
     
     //Subir la imagen al Cloudinary
     const urlImage = await subidaImagenCloudinary( req.files.archivo.tempFilePath );
-    const img = urlImage;
+    const image = urlImage;
     
-    const user = new User({ name, password, email, rol, img });
+    const user = new User({ name, password, email, rol, image });
     
     // Encriptar la contraseña
     const salt = bcryptjs.genSaltSync();
@@ -76,8 +76,8 @@ const userPut = async (req, res = response) => {
     const user = await User.findById(id);
 
     //Actualizar imagen en Cloudinary
-    const urlImg = await actualizarImagenCloudinary(req.files.archivo.tempFilePath,user.img);
-    resto.img=urlImg;
+    const urlImg = await actualizarImagenCloudinary(req.files.archivo.tempFilePath,user.image);
+    resto.image=urlImg;
 
     //actualizar usuario
     await user.update(resto);
@@ -102,7 +102,7 @@ const userDelete = async (req, res = response) => {
     const resp = await User.findByIdAndRemove(id);
     
     //Eliminamos la imagen de Cloudinary  
-    eliminarImagenCloudinary(resp.img);
+    eliminarImagenCloudinary(resp.image);
 
     res.status(200).send({ msg: "Usuario eliminado Correctamente" });
   

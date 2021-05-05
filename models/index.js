@@ -1,4 +1,4 @@
-const Planta = require('./planta');
+const Casa = require('./casa');
 const Rol = require('./rol');
 const User = require('./user');
 const Like = require('./like');
@@ -6,7 +6,7 @@ const Like = require('./like');
 
 
 module.exports = {
-    Planta,
+    Casa,
     Rol,
     User,
     Like

@@ -12,7 +12,7 @@ const fileUpload = require('express-fileupload');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
-const plantasRouter = require('./routes/plantas');
+const casasRouter = require('./routes/casas');
 const authRouter = require('./routes/auth');
 const likesRouter = require('./routes/likes');
 
@@ -42,9 +42,8 @@ app.use( fileUpload({
 //routes
 app.use('/', indexRouter);
 app.use('/api/users', usersRouter);
-app.use('/api/planta', plantasRouter);
+app.use('/api/casa', casasRouter);
 app.use('/api/auth', authRouter);
-app.use('/api/likes', likesRouter);
 
 
 // Conectar a la DB

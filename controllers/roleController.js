@@ -1,12 +1,12 @@
 const { request, response } = require("express");
+const mongoose = require('mongoose');
 const { Rol } = require('../models');
 
 //agrega los roles de los usuarios
 const initRolesDB = async () => {
-
   //busca los roles  
   const roles = await Rol.find();
-  //comprueba q no existan o este vacía la colle
+  //comprueba q no existan o este vacía la collections
   if (!roles || roles.length == 0) {
     //crea una instancia para cada rol
     const roleAdmin = new Rol({ rol: "ADMIN_ROLE" });
