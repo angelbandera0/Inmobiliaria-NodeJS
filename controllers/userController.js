@@ -10,7 +10,7 @@ const userGet = async (req = request, res = response) => {
   const [total, users] = await Promise.all([
     User.countDocuments(),
     User.find()
-        .populate("rol")
+        .populate("rol","rol")
         .skip(Number(desde))
         .limit(Number(limite)),
   ]);

@@ -9,6 +9,7 @@ const { googleVerify } = require("../helpers/google-verify");
 const login = async (req, res = response) => {
   //obtiene el email y la contraseña q se le envia
   const { email, password } = req.body;
+  console.log(email, "assssssssssssssssssss");
   try {
     // Verificar si el email existe
     const usuario = await User.findOne({ email }).populate("rol");
