@@ -18,26 +18,14 @@ const casaGet = async (req = request, res = response) => {
 const casaPost = async (req, res = response) => {
 
   try {
-    const {
-        name,
-        description,
-        cuidados,
-        isConMaceta,
-        isPersonalizable,
-      } = req.body;
+    const {  ...data  } = req.body;
 
     const urlImage = await subidaImagenCloudinary(
       req.files.archivo.tempFilePath
     );
-    const image = urlImage;
-    const casa = new Casa({
-      name,
-      image,
-      description,
-      cuidados,
-      isConMaceta,
-      isPersonalizable,
-    });
+    const img = urlImage;
+    const casa = new Casa(  data  );
+    casa.img = img;
 
     // Guardar en BD
 
@@ -59,13 +47,15 @@ const casaPut = async (req, res = response) => {
 
   try {
     //Buscar y actualizar
-    const casa = await Casa.findById(id);    
-    const urlImg = await actualizarImagenCloudinary(req.files.archivo.tempFilePath,casa.image);
-    resto.image=urlImg;
-    console.log(resto);
+    //const planta = await Planta.findByIdAndUpdate(id, resto);
+    const casa = await Casa.findById(id);
+    if(req.files != null){    
+    const urlImg = await actualizarImagenCloudinary(req.files.archivo.tempFilePath,casa.img);
+    resto.img=urlImg;
+    }
+    
     await casa.update(resto);
     
-
     res.status(200).send({
       casa: casa,
       msg: "Casa Actualizada Correctame",
@@ -82,7 +72,7 @@ const casaDelete = async (req, res = response) => {
   try {
     //Fisicamente lo borramos
     const resp = await Casa.findByIdAndRemove(id);
-    eliminarImagenCloudinary(resp.image);
+    eliminarImagenCloudinary(resp.img);
 
     res.status(200).send({ msg: "Casa eliminada correctamente" });
   } catch (e) {

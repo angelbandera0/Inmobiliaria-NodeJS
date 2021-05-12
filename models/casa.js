@@ -1,28 +1,38 @@
-const {Schema,model}=require("mongoose");
+const {Schema,model,Types}=require("mongoose");
 
-// Declare the Schema of the Mongo model
 const casaSchema = new Schema({
-    municipio:{
+    name:{
         type:String,
-        required:[true,'El municipio es obligatorio'],
+        required:[true,'El nombre es obligatorio'],
         index:true,
     },
-    image:{
+    img:{
         type:String,
-        //required:[true,'La contraseña es obligatoria'],
-        
     },
-    likes: [{ type: Schema.Types.ObjectId, ref: "Like" }],
-    createdAt:{
-        type: Date,
-        default: Date.now()
+    description:{
+        type:String,
     },
-    updatedAt:{
-        type: Date,
-        default: Date.now()
-    }
+    cantLikes:{
+        type:Number,
+        default: 0
+    },
+    provincia:{    type:String },
     
+    municipio:{    type:String },
+    
+    localidad:{    type:String },
+    
+    tipoPropiedad:{    type:String },
+    
+    precio:{    type:String },
+    
+    cantCuartos:{    type:Number },
 });
+casaSchema.methods.toJSON = function() {
+    const { __v, ...casa  } = this.toObject();
+    //se modifica para q salga en los datos en vez de _id salga uid
 
+    return casa;
+}
 //Export the model
 module.exports = model('Casa', casaSchema);
