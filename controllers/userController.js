@@ -10,7 +10,7 @@ const userGet = async (req = request, res = response) => {
   const [total, users] = await Promise.all([
     User.countDocuments(),
     User.find()
-        .populate("rol","rol")
+        .populate("rol")
         .skip(Number(desde))
         .limit(Number(limite)),
   ]);
@@ -22,19 +22,15 @@ const userGet = async (req = request, res = response) => {
 };
 //Agregar Usuario
 const userPost = async (req, res = response) => {
-  const { name, password, email, rol} = req.body;
-  
-  
-  
-  
-  
+  const { name, password, email} = req.body;
+  console.log(req);
   try {
     
     //Subir la imagen al Cloudinary
     const urlImage = await subidaImagenCloudinary( req.files.archivo.tempFilePath );
     const image = urlImage;
     
-    const user = new User({ name, password, email, rol, image });
+    const user = new User({ name, password, email, image });
     
     // Encriptar la contraseña
     const salt = bcryptjs.genSaltSync();
