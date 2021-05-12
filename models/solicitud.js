@@ -16,6 +16,14 @@ const solicitudSchema = new Schema({
         required:true,
         ref: 'User',
     },
+    createdAt:{
+        type: Date,
+        default: Date.now()
+    },
+    updatedAt:{
+        type: Date,
+        default: Date.now()
+    },
 
     img: [{ type: String }],
 

@@ -9,16 +9,22 @@ const {
     tieneRole
 } = require('../middlewares');
 const {  existCasaById } = require('../helpers/casas_db_validator');
-const { casaPost, casaGet, casaPut, casaDelete  } = require("../controllers/casaController");
+const { casaPost, casaGet, casaPut, casaDelete, casaGetById  } = require("../controllers/casaController");
 
 router.get("/", casaGet);
 
+router.get("/:id", casaGetById);
+
 router.post("/",[
+    validarJWT,
+    esAdminRole,
     check('name', 'El nombre es obligatorio').not().isEmpty(),
     validarCampos], 
     casaPost);
 
 router.put("/:id",[
+    validarJWT,
+    esAdminRole,
     check('id', 'No es un ID válido').isMongoId(),
     check('id').custom( existCasaById ),
     validarCampos], 
@@ -27,7 +33,6 @@ router.put("/:id",[
 router.delete("/:id",[
     validarJWT,
     esAdminRole,
-    //tieneRole('ADMIN_ROLE'),
     check('id', 'No es un ID válido').isMongoId(),
     check('id').custom( existCasaById ),
     validarCampos], 

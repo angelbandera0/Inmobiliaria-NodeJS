@@ -15,6 +15,18 @@ const solicitudGet = async (req = request, res = response) => {
     solicitudes: solicitudes,
   });
 };
+
+const solicitudGetById = async (req = request, res = response) => {
+  const { id } = req.params;
+  const solicitud = await Solicitud.findById(id);
+
+  res.status(200).send({
+    
+    solicitud: solicitud,
+  });
+};
+
+
 //Agregar Solicitud
 const solicitudPost = async (req, res = response) => {
   
@@ -38,9 +50,9 @@ const solicitudPost = async (req, res = response) => {
     //Buscar el User en la DB
     const resUser = await User.findById(resSolicitud.user);
     
-    //Asignar el user al array de user del rol
+    //Asignar la solicitud al usuario
     resUser.solicitudes.push(solicitud);
-    //guardar cambios en el rol 
+    //guardar cambios en el user 
     await resUser.save();
     
 
@@ -71,7 +83,9 @@ const solicitudPut = async (req, res = response) => {
     const urlImg = await actualizarImagenCloudinary(req.files.archivo, solicitud.img);
     resto.img=urlImg;
     }
-    
+    //actualiza la fecha de actualización
+    resto.updatedAt = Date.now();
+
     await solicitud.update(resto);
     
     res.status(200).send({
@@ -91,7 +105,6 @@ const solicitudDelete = async (req, res = response) => {
   try {
     //Fisicamente lo borramos
     const resp = await Solicitud.findByIdAndRemove(id);
-    console.log(resp);
     eliminarImagenCloudinary(resp.img);
 
     /*

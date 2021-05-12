@@ -26,6 +26,8 @@ const userSchema = new Schema({
     myLikes: [{ type: Schema.Types.ObjectId, ref: "Like" }],
 
     solicitudes: [{ type: Schema.Types.ObjectId, ref: "Solicitud" }],
+    
+    casas: [{ type: Schema.Types.ObjectId, ref: "Casa" }],
 
     image: {
         type: String,

@@ -6,9 +6,23 @@ const casaSchema = new Schema({
         required:[true,'El nombre es obligatorio'],
         index:true,
     },
-    img:{
-        type:String,
+    user:{
+        type:Schema.Types.ObjectId,
+        required:true,
+        ref: 'User',
     },
+    
+    img: [{ type: String }],
+
+    createdAt:{
+        type: Date,
+        default: Date.now()
+    },
+    updatedAt:{
+        type: Date,
+        default: Date.now()
+    },
+
     description:{
         type:String,
     },
@@ -27,6 +41,14 @@ const casaSchema = new Schema({
     precio:{    type:String },
     
     cantCuartos:{    type:Number },
+
+    cantCuartos:{    type:Number },
+
+    tienePatio:{   type:Boolean},
+    
+    tieneGaraje:{   type:Boolean},
+    
+    tieneCarpoch:{   type:Boolean},
 });
 casaSchema.methods.toJSON = function() {
     const { __v, ...casa  } = this.toObject();

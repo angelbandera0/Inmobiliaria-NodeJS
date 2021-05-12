@@ -1,7 +1,7 @@
 const { request, response } = require("express");
 const bcryptjs = require("bcryptjs");
 const { subidaImagenCloudinary, actualizarImagenCloudinary, eliminarImagenCloudinary } = require("./subidasController");
-const { Casa } = require("../models");
+const { Casa, User } = require("../models");
 
 const casaGet = async (req = request, res = response) => {
   const [total, casas] = await Promise.all([
@@ -14,22 +14,44 @@ const casaGet = async (req = request, res = response) => {
     casas: casas,
   });
 };
+
+const casaGetById = async (req = request, res = response) => {
+  const { id } = req.params;
+  const casa = await Casa.findById(id);
+
+  res.status(200).send({
+    
+    casa: casa,
+  });
+};
+
+
 //Agregar Casa
 const casaPost = async (req, res = response) => {
 
   try {
     const {  ...data  } = req.body;
 
+    
     const urlImage = await subidaImagenCloudinary(
-      req.files.archivo.tempFilePath
+      req.files.archivo
     );
-    const img = urlImage;
+    
     const casa = new Casa(  data  );
-    casa.img = img;
+    casa.img = urlImage;
 
+    
+    casa.user = req.usuario;
+    
     // Guardar en BD
-
-    await casa.save();
+    const resCasa = await casa.save();
+    
+    //Buscar el User en la DB
+    const resUser = await User.findById(resCasa.user);
+    //Asignar al usuario la casa
+    resUser.casas.push(casa);
+    //guardar cambios en el user
+    await resUser.save();
 
     res.status(201).send({
       casa: casa,
@@ -50,10 +72,12 @@ const casaPut = async (req, res = response) => {
     //const planta = await Planta.findByIdAndUpdate(id, resto);
     const casa = await Casa.findById(id);
     if(req.files != null){    
-    const urlImg = await actualizarImagenCloudinary(req.files.archivo.tempFilePath,casa.img);
+    const urlImg = await actualizarImagenCloudinary(req.files.archivo,casa.img);
     resto.img=urlImg;
     }
-    
+    //actualiza la fecha de actualización
+    resto.updatedAt = Date.now();
+
     await casa.update(resto);
     
     res.status(200).send({
@@ -80,4 +104,4 @@ const casaDelete = async (req, res = response) => {
   }
 };
 
-module.exports = { casaPost, casaGet, casaPut, casaDelete };
+module.exports = { casaPost, casaGet, casaPut, casaDelete, casaGetById };
