@@ -125,4 +125,4 @@ const solicitudDelete = async (req, res = response) => {
   }
 };
 
-module.exports = { solicitudPost, solicitudGet, solicitudPut, solicitudDelete };
+module.exports = { solicitudPost, solicitudGet, solicitudPut, solicitudDelete, solicitudGetById };

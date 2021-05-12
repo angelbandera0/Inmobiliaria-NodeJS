@@ -8,9 +8,11 @@ const {
     esAdminRole,
 } = require('../middlewares');
 const {  existSolicitudById } = require('../helpers/casas_db_validator');
-const { solicitudPost, solicitudGet, solicitudPut, solicitudDelete  } = require("../controllers/solicitudController");
+const { solicitudPost, solicitudGet, solicitudPut, solicitudDelete, solicitudGetById  } = require("../controllers/solicitudController");
 
 router.get("/", solicitudGet);
+
+router.get("/:id", solicitudGetById);
 
 router.post("/",[
     validarJWT,
