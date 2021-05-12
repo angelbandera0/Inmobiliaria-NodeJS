@@ -1,4 +1,4 @@
-const {Casa} = require("../models")
+const {Casa, Solicitud} = require("../models")
 
 const existCasaById = async( id ) => {
     // Verificar si el correo existe
@@ -8,4 +8,14 @@ const existCasaById = async( id ) => {
     }
 }
 
-module.exports = { existCasaById };
+
+const existSolicitudById = async( id ) => {
+    // Verificar si el correo existe
+    const existeSolicitud = await Solicitud.findById(id);
+    if ( !existeSolicitud ) {
+        throw new Error(`El id no existe ${ id }`);
+    }
+}
+
+
+module.exports = { existCasaById, existSolicitudById };

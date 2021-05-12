@@ -24,6 +24,9 @@ const userSchema = new Schema({
         default: Types.ObjectId("4edd40c86762e0fb12000001")
     },
     myLikes: [{ type: Schema.Types.ObjectId, ref: "Like" }],
+
+    solicitudes: [{ type: Schema.Types.ObjectId, ref: "Solicitud" }],
+
     image: {
         type: String,
     },
