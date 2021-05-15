@@ -12,9 +12,9 @@ const subidaImagenCloudinary = async(tempFilePath) => {
 const subidaImagenCloudinary = async(archivos) => {
     
     const urlArrary = [];
-    
+
     if(archivos[0] == null){
-        const { secure_url } = await cloudinary.uploader.upload( tempFilePath );   
+        const { secure_url } = await cloudinary.uploader.upload( archivos.tempFilePath );   
         return secure_url;
 
     }

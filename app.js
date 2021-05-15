@@ -12,6 +12,7 @@ const fileUpload = require('express-fileupload');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
+const buscarRouter = require('./routes/buscar');
 const casasRouter = require('./routes/casas');
 const authRouter = require('./routes/auth');
 const solicitudRouter = require('./routes/solicitud');
@@ -46,6 +47,7 @@ app.use('/api/users', usersRouter);
 app.use('/api/casa', casasRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/solicitud', solicitudRouter);
+app.use('/api/buscar', buscarRouter);
 
 
 // Conectar a la DB

@@ -1,4 +1,4 @@
-const { request, response } = require("express");
+const { request, response, query } = require("express");
 const bcryptjs = require("bcryptjs");
 const { subidaImagenCloudinary, actualizarImagenCloudinary, eliminarImagenCloudinary } = require("./subidasController");
 const { Casa, User } = require("../models");
@@ -6,7 +6,22 @@ const { Casa, User } = require("../models");
 const casaGet = async (req = request, res = response) => {
   const [total, casas] = await Promise.all([
     Casa.countDocuments(),
-    Casa.find(),
+    Casa.find()
+       
+  ]);
+
+  res.status(200).send({
+    total: total,
+    casas: casas,
+  });
+};
+
+const casaGetUltimas = async (req = request, res = response) => {
+  const [total, casas] = await Promise.all([
+    Casa.countDocuments(),
+    Casa.find()
+        .sort({createdAt : -1})
+        .limit(Number(10)),
   ]);
 
   res.status(200).send({
@@ -104,4 +119,23 @@ const casaDelete = async (req, res = response) => {
   }
 };
 
-module.exports = { casaPost, casaGet, casaPut, casaDelete, casaGetById };
+const buscar = async (req, res = response) => {
+
+  try{
+  
+    const casa = await Casa.find( req.body );
+    
+    res.status(200).send({ casa });
+  
+  }catch(e){
+    res.status(400).send({
+      Error: e
+    })
+  }
+    
+  
+
+  
+};
+
+module.exports = { casaPost, casaGet, casaPut, casaDelete, casaGetById, buscar, casaGetUltimas };
