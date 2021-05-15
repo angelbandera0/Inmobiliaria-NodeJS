@@ -40,7 +40,7 @@ const casaSchema = new Schema({
     
     precio:{    type:String },
     
-    cantCuartos:{    type:Number },
+    cantBannos:{    type:Number },
 
     cantCuartos:{    type:Number },
 

@@ -43,7 +43,7 @@ const casaGetById = async (req = request, res = response) => {
 
 //Agregar Casa
 const casaPost = async (req, res = response) => {
-
+  console.log(req);
   try {
     const {  ...data  } = req.body;
 
