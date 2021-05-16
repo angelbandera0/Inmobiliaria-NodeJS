@@ -26,10 +26,11 @@ const casaSchema = new Schema({
     description:{
         type:String,
     },
-    cantLikes:{
-        type:Number,
-        default: 0
-    },
+    
+    likes: [{ type: Schema.Types.ObjectId, ref: "Like" }],
+
+    numTelefonoPropietario:{    type:Number },
+
     provincia:{    type:String },
     
     municipio:{    type:String },
@@ -38,7 +39,7 @@ const casaSchema = new Schema({
     
     tipoPropiedad:{    type:String },
     
-    precio:{    type:String },
+    precio:{    type:Number },
     
     cantBannos:{    type:Number },
 

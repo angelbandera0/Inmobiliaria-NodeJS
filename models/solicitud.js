@@ -31,7 +31,7 @@ const solicitudSchema = new Schema({
 
     description:{    type:String },
 
-    numTelefono:{    type:Number },
+    numTelefonoPropietario:{    type:Number },
 
     provincia:{    type:String },
     
@@ -44,8 +44,16 @@ const solicitudSchema = new Schema({
     tipoPropiedad:{    type:String },
     
     precio:{    type:String },
+
+    cantBannos:{    type:Number },
     
     cantCuartos:{    type:Number },
+
+    tienePatio:{   type:Boolean},
+    
+    tieneGaraje:{   type:Boolean},
+    
+    tieneCarpoch:{   type:Boolean},
 });
 solicitudSchema.methods.toJSON = function() {
     const { __v, ...solicitud  } = this.toObject();

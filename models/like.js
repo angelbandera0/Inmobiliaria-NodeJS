@@ -6,10 +6,10 @@ const LikeSchema = Schema({
     required: true,
     ref: "User",
   },
-  planta: {
+  casa: {
     type: Schema.Types.ObjectId,
     required: true,
-    ref: "Planta",
+    ref: "Casa",
   },
 
   createdAt: {
