@@ -45,14 +45,11 @@ const casaPost = async (req, res = response) => {
   console.log(req);
   try {
     const { ...data } = req.body;
+
+    const urlImage = await subidaImagenCloudinary(req.files.archivo);
+
     const casa = new Casa(data);
-
-    //verifica si no vienen imagenes
-    if (!req.files == null) {
-      const urlImage = await subidaImagenCloudinary(req.files.archivo);
-
-      casa.img = urlImage;
-    }
+    casa.img = urlImage;
 
     casa.user = req.usuario;
 

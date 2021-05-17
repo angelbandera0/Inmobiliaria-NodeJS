@@ -20,6 +20,14 @@ const userGet = async (req = request, res = response) => {
     users: users,
   });
 };
+const userGetById = async (req = request, res = response) => {
+  const { id } = req.params;
+  const user = await User.findById(id);
+
+  res.status(200).send({
+    user: user,
+  });
+};
 //Agregar Usuario
 const userPost = async (req, res = response) => {
   const { name, password, email} = req.body;
@@ -107,4 +115,4 @@ const userDelete = async (req, res = response) => {
   }
 };
 
-module.exports = { userPost, userGet, userPut, userDelete };
+module.exports = { userPost, userGet, userPut, userDelete,userGetById };

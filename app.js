@@ -50,6 +50,7 @@ app.use('/api/casa', casasRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/solicitud', solicitudRouter);
 app.use('/api/buscar', buscarRouter);
+app.use('/api/like', likesRouter);
 
 
 // Conectar a la DB
