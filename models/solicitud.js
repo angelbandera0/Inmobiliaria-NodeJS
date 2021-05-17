@@ -1,65 +1,65 @@
-const {Schema,model,Types}=require("mongoose");
+const { Schema, model, Types } = require("mongoose");
 
 const solicitudSchema = new Schema({
-    name:{
-        type:String,
-        required:[true,'El nombre es obligatorio'],
-        index:true,
-    },
-    aplellido:{
-        type:String,
-        required:[true,'Los apellidos son obligatorios'],
-        index:true,
-    },
-    user:{
-        type:Schema.Types.ObjectId,
-        required:true,
-        ref: 'User',
-    },
-    createdAt:{
-        type: Date,
-        default: Date.now()
-    },
-    updatedAt:{
-        type: Date,
-        default: Date.now()
-    },
+  nombre: {
+    type: String,
+    required: [true, "El nombre es obligatorio"],
+    index: true,
+  },
+  apellidos: {
+    type: String,
+    required: [true, "Los apellidos son obligatorios"],
+    index: true,
+  },
+  user: {
+    type: Schema.Types.ObjectId,
+    required: true,
+    ref: "User",
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now(),
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now(),
+  },
 
-    img: [{ type: String }],
+  img: [{ type: String }],
 
-    estado:{    type:String },
+  estado: { type: String, default: "Pendiente" },
 
-    description:{    type:String },
+  description: { type: String },
 
-    numTelefonoPropietario:{    type:Number },
+  numTelefonoPropietario: { type: Number },
 
-    provincia:{    type:String },
-    
-    municipio:{    type:String },
-    
-    localidad:{    type:String },
+  provincia: { type: String },
 
-    direccion:{    type:String },
-    
-    tipoPropiedad:{    type:String },
-    
-    precio:{    type:String },
+  municipio: { type: String },
 
-    cantBannos:{    type:Number },
-    
-    cantCuartos:{    type:Number },
+  localidad: { type: String },
 
-    tienePatio:{   type:Boolean},
-    
-    tieneGaraje:{   type:Boolean},
-    
-    tieneCarpoch:{   type:Boolean},
+  direccion: { type: String },
+
+  tipoPropiedad: { type: String },
+
+  precio: { type: Number },
+
+  cantBannos: { type: Number },
+
+  cantCuartos: { type: Number },
+
+  tienePatio: { type: Boolean },
+
+  tieneGaraje: { type: Boolean },
+
+  tieneCarpoch: { type: Boolean },
 });
-solicitudSchema.methods.toJSON = function() {
-    const { __v, ...solicitud  } = this.toObject();
-    //se modifica para q salga en los datos en vez de _id salga uid
+solicitudSchema.methods.toJSON = function () {
+  const { __v, ...solicitud } = this.toObject();
+  //se modifica para q salga en los datos en vez de _id salga uid
 
-    return solicitud;
-}
+  return solicitud;
+};
 //Export the model
-module.exports = model('Solicitud', solicitudSchema);
+module.exports = model("Solicitud", solicitudSchema);
