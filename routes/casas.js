@@ -22,7 +22,7 @@ router.post("/buscar", buscar);
 router.post("/",[
     validarJWT,
     esAdminRole,
-    check('name', 'El nombre es obligatorio').not().isEmpty(),
+    check('title', 'El título es obligatorio').not().isEmpty(),
     validarCampos], 
     casaPost);
 
