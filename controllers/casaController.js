@@ -1,13 +1,16 @@
 const { request, response, query } = require("express");
 const bcryptjs = require("bcryptjs");
-const { subidaImagenCloudinary, actualizarImagenCloudinary, eliminarImagenCloudinary } = require("./subidasController");
+const {
+  subidaImagenCloudinary,
+  actualizarImagenCloudinary,
+  eliminarImagenCloudinary,
+} = require("./subidasController");
 const { Casa, User } = require("../models");
 
 const casaGet = async (req = request, res = response) => {
   const [total, casas] = await Promise.all([
     Casa.countDocuments(),
-    Casa.find()
-       
+    Casa.find(),
   ]);
 
   res.status(200).send({
@@ -19,9 +22,7 @@ const casaGet = async (req = request, res = response) => {
 const casaGetUltimas = async (req = request, res = response) => {
   const [total, casas] = await Promise.all([
     Casa.countDocuments(),
-    Casa.find()
-        .sort({createdAt : -1})
-        .limit(Number(10)),
+    Casa.find().sort({ createdAt: -1 }).limit(Number(10)),
   ]);
 
   res.status(200).send({
@@ -35,32 +36,29 @@ const casaGetById = async (req = request, res = response) => {
   const casa = await Casa.findById(id);
 
   res.status(200).send({
-    
     casa: casa,
   });
 };
-
 
 //Agregar Casa
 const casaPost = async (req, res = response) => {
   console.log(req);
   try {
-    const {  ...data  } = req.body;
+    const { ...data } = req.body;
+    const casa = new Casa(data);
 
-    
-    const urlImage = await subidaImagenCloudinary(
-      req.files.archivo
-    );
-    
-    const casa = new Casa(  data  );
-    casa.img = urlImage;
+    //verifica si no vienen imagenes
+    if (!req.files == null) {
+      const urlImage = await subidaImagenCloudinary(req.files.archivo);
 
-    
+      casa.img = urlImage;
+    }
+
     casa.user = req.usuario;
-    
+
     // Guardar en BD
     const resCasa = await casa.save();
-    
+
     //Buscar el User en la DB
     const resUser = await User.findById(resCasa.user);
     //Asignar al usuario la casa
@@ -86,15 +84,18 @@ const casaPut = async (req, res = response) => {
     //Buscar y actualizar
     //const planta = await Planta.findByIdAndUpdate(id, resto);
     const casa = await Casa.findById(id);
-    if(req.files != null){    
-    const urlImg = await actualizarImagenCloudinary(req.files.archivo,casa.img);
-    resto.img=urlImg;
+    if (req.files != null) {
+      const urlImg = await actualizarImagenCloudinary(
+        req.files.archivo,
+        casa.img
+      );
+      resto.img = urlImg;
     }
     //actualiza la fecha de actualización
     resto.updatedAt = Date.now();
 
     await casa.update(resto);
-    
+
     res.status(200).send({
       casa: casa,
       msg: "Casa Actualizada Correctame",
@@ -120,22 +121,23 @@ const casaDelete = async (req, res = response) => {
 };
 
 const buscar = async (req, res = response) => {
+  try {
+    const casa = await Casa.find(req.body);
 
-  try{
-  
-    const casa = await Casa.find( req.body );
-    
     res.status(200).send({ casa });
-  
-  }catch(e){
+  } catch (e) {
     res.status(400).send({
-      Error: e
-    })
+      Error: e,
+    });
   }
-    
-  
-
-  
 };
 
-module.exports = { casaPost, casaGet, casaPut, casaDelete, casaGetById, buscar, casaGetUltimas };
+module.exports = {
+  casaPost,
+  casaGet,
+  casaPut,
+  casaDelete,
+  casaGetById,
+  buscar,
+  casaGetUltimas,
+};
