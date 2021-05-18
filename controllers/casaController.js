@@ -121,8 +121,13 @@ const buscar = async (req, res = response) => {
   try {
     console.log(req.body);
     const casa = await Casa.find(req.body);
+<<<<<<< HEAD
 
     res.status(200).send({ casas: casas });
+=======
+    
+    res.status(200).send({ casa });
+>>>>>>> jorge
   } catch (e) {
     res.status(400).send({
       Error: e,

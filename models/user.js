@@ -27,6 +27,8 @@ const userSchema = new Schema({
 
     solicitudes: [{ type: Schema.Types.ObjectId, ref: "Solicitud" }],
     
+    citas: [{ type: Schema.Types.ObjectId, ref: "Cita" }],
+    
     casas: [{ type: Schema.Types.ObjectId, ref: "Casa" }],
 
     image: {
