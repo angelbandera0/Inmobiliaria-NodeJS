@@ -40,7 +40,12 @@ const actualizarImagenCloudinary = async(archivos,modeloUrlArray) => {
             const [ public_id ] = nombre.split('.');
             cloudinary.uploader.destroy( public_id );    
         }
-    }    
+    }   
+    if(archivos[0] == null){
+        const { secure_url } = await cloudinary.uploader.upload( archivos.tempFilePath );   
+        return secure_url;
+
+    } 
     for (const archivo of archivos) {
         const { secure_url } = await cloudinary.uploader.upload(archivo.tempFilePath );  
         urlArray.push(secure_url);  
