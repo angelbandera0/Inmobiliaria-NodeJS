@@ -29,6 +29,8 @@ const solicitudSchema = new Schema({
 
   estado: { type: String, default: "Pendiente" },
 
+  leida: { type: Boolean, default: false },
+
   description: { type: String },
 
   numTelefonoPropietario: { type: Number },

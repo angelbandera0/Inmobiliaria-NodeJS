@@ -3,7 +3,7 @@ const { Schema, model, Types } = require("mongoose");
 const casaSchema = new Schema({
   title: {
     type: String,
-    required: [true, "El nombre es obligatorio"],
+    required: [true, "El titlulo es obligatorio"],
     index: true,
   },
   nombre: {
@@ -38,6 +38,8 @@ const casaSchema = new Schema({
   },
 
   likes: [{ type: Schema.Types.ObjectId, ref: "Like" }],
+
+  citas: [{ type: Schema.Types.ObjectId, ref: "Cita" }],
 
   numTelefonoPropietario: { type: Number },
 
