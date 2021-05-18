@@ -16,7 +16,8 @@ router.get("/:id", solicitudGetById);
 
 router.post("/",[
     validarJWT,
-    check('name', 'El nombre es obligatorio').not().isEmpty(),
+    check('nombre', 'El nombre es obligatorio').not().isEmpty(),
+    check('apellidos', 'Los apellidos son obligatorios').not().isEmpty(),
     validarCampos], 
     solicitudPost);
 

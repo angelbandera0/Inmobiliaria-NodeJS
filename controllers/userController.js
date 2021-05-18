@@ -35,7 +35,7 @@ const userPost = async (req, res = response) => {
   try {
     
     //Subir la imagen al Cloudinary
-    const urlImage = await subidaImagenCloudinary( req.files.archivo.tempFilePath );
+    const urlImage = await subidaImagenCloudinary( req.files.archivo);
     const image = urlImage;
     
     const user = new User({ name, password, email, image });
@@ -80,7 +80,7 @@ const userPut = async (req, res = response) => {
     const user = await User.findById(id);
 
     //Actualizar imagen en Cloudinary
-    const urlImg = await actualizarImagenCloudinary(req.files.archivo.tempFilePath,user.image);
+    const urlImg = await actualizarImagenCloudinary(req.files.archivo,user.image);
     resto.image=urlImg;
 
     //actualizar usuario

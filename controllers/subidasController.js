@@ -10,10 +10,10 @@ const subidaImagenCloudinary = async(tempFilePath) => {
 */
 
 const subidaImagenCloudinary = async(archivos) => {
-    
+    console.log(archivos);
     const urlArrary = [];
 
-    if(archivos[0] == null){
+    if(!Array.isArray(archivos)){
         const { secure_url } = await cloudinary.uploader.upload( archivos.tempFilePath );   
         return secure_url;
 

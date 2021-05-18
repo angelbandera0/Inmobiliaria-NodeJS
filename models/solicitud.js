@@ -30,6 +30,7 @@ const solicitudSchema = new Schema({
   estado: { type: String, default: "Pendiente" },
 
   description: { type: String },
+  title: { type: String },
 
   numTelefonoPropietario: { type: Number },
 

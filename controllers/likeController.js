@@ -41,7 +41,9 @@ const removeLike = async (req = request, res = response) => {
   //actualiza el dichos modelos retirando el like q fue eliminado
   casa.likes.pull(resp);
   user.myLikes.pull(resp);
-  Promise.all([casa.save(), user.save()]);
+  await casa.save();
+  await user.save();
+  //Promise.all([casa.save(), user.save()]);
 
   //retorna los valores
   res.status(200).send({ like: resp });

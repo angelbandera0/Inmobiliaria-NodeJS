@@ -119,9 +119,10 @@ const casaDelete = async (req, res = response) => {
 
 const buscar = async (req, res = response) => {
   try {
+    console.log(req.body);
     const casa = await Casa.find(req.body);
 
-    res.status(200).send({ casa });
+    res.status(200).send({ casas: casas });
   } catch (e) {
     res.status(400).send({
       Error: e,
