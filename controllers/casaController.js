@@ -42,7 +42,7 @@ const casaGetById = async (req = request, res = response) => {
 
 //Agregar Casa
 const casaPost = async (req, res = response) => {
-  console.log(req);
+  
   try {
     const { ...data } = req.body;
 
@@ -121,13 +121,8 @@ const buscar = async (req, res = response) => {
   try {
     console.log(req.body);
     const casa = await Casa.find(req.body);
-<<<<<<< HEAD
-
-    res.status(200).send({ casas: casas });
-=======
     
     res.status(200).send({ casa });
->>>>>>> jorge
   } catch (e) {
     res.status(400).send({
       Error: e,

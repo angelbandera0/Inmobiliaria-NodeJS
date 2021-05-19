@@ -10,7 +10,7 @@ const userGet = async (req = request, res = response) => {
   const [total, users] = await Promise.all([
     User.countDocuments(),
     User.find()
-        .populate("rol")
+        .populate("role")
         .skip(Number(desde))
         .limit(Number(limite)),
   ]);
@@ -20,14 +20,33 @@ const userGet = async (req = request, res = response) => {
     users: users,
   });
 };
+
+
 const userGetById = async (req = request, res = response) => {
   const { id } = req.params;
   const user = await User.findById(id);
-
+  
   res.status(200).send({
     user: user,
   });
 };
+
+const misSolicitudes = async (req = request, res = response) => {
+  const { id } = req.params;
+  const user = await User.findById(id)
+                         .populate('solicitudes')
+                         .populate('casas')
+                         .populate('citas');
+
+  
+  res.status(200).send({
+    userSolicitudes: user.solicitudes,
+    userCasas: user.casas,
+    userCitas: user.citas,        
+  });
+}
+
+
 //Agregar Usuario
 const userPost = async (req, res = response) => {
   const { name, password, email} = req.body;
@@ -115,4 +134,4 @@ const userDelete = async (req, res = response) => {
   }
 };
 
-module.exports = { userPost, userGet, userPut, userDelete,userGetById };
+module.exports = { userPost, userGet, userPut, userDelete,userGetById, misSolicitudes };
