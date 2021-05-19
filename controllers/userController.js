@@ -31,7 +31,7 @@ const userGetById = async (req = request, res = response) => {
   });
 };
 
-const misSolicitudes = async (req = request, res = response) => {
+const misAgragaciones = async (req = request, res = response) => {
   const { id } = req.params;
   const user = await User.findById(id)
                          .populate('solicitudes')
@@ -40,6 +40,7 @@ const misSolicitudes = async (req = request, res = response) => {
 
   
   res.status(200).send({
+    user,
     userSolicitudes: user.solicitudes,
     userCasas: user.casas,
     userCitas: user.citas,        
@@ -134,4 +135,4 @@ const userDelete = async (req, res = response) => {
   }
 };
 
-module.exports = { userPost, userGet, userPut, userDelete,userGetById, misSolicitudes };
+module.exports = { userPost, userGet, userPut, userDelete,userGetById, misAgragaciones };

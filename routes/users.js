@@ -9,14 +9,14 @@ const {
 } = require('../middlewares');
 const { emailExist, existUserById } = require('../helpers/users_db_validator');
 
-const { userPost, userGet, userPut,userDelete,userGetById, misSolicitudes } = require("../controllers/userController");
+const { userPost, userGet, userPut,userDelete,userGetById, misAgragaciones } = require("../controllers/userController");
 
 /* Route users listing. */
 router.get("/", userGet);
 
 router.get("/:id", userGetById);
 
-router.get("/agragaciones/:id", misSolicitudes);
+router.get("/agragaciones/:id", misAgragaciones);
 
 router.post("/",[
     check('name', 'El nombre es obligatorio').not().isEmpty(),    
