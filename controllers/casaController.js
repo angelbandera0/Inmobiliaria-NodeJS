@@ -117,12 +117,16 @@ const casaDelete = async (req, res = response) => {
   }
 };
 
-const buscar = async (req, res = response) => {
+const casaBuscar = async (req, res = response) => {
+  const { limite = 5, desde = 0 } = req.query;
   try {
-    console.log(req.body);
-    const casa = await Casa.find(req.body);
+    
+    const casa = await Casa.find(req.body)
+                           .skip(Number(desde))
+                           .limit(Number(limite))
     
     res.status(200).send({ casa });
+                   
   } catch (e) {
     res.status(400).send({
       Error: e,
@@ -136,6 +140,6 @@ module.exports = {
   casaPut,
   casaDelete,
   casaGetById,
-  buscar,
+  casaBuscar,
   casaGetUltimas,
 };

@@ -9,7 +9,7 @@ const {
     tieneRole
 } = require('../middlewares');
 const {  existCasaById } = require('../helpers/casas_db_validator');
-const { casaPost, casaGet, casaPut, casaDelete, casaGetById, buscar, casaGetUltimas  } = require("../controllers/casaController");
+const { casaPost, casaGet, casaPut, casaDelete, casaGetById, casaBuscar, casaGetUltimas  } = require("../controllers/casaController");
 
 router.get("/", casaGet);
 
@@ -17,7 +17,7 @@ router.get("/ultimas", casaGetUltimas);
 
 router.get("/:id", casaGetById);
 
-router.post("/buscar", buscar);
+router.post("/buscar", casaBuscar);
 
 router.post("/",[
     validarJWT,
