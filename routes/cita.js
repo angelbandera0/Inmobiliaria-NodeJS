@@ -14,9 +14,15 @@ const {
     citaPut,
     citaDelete} = require('../controllers/citaController');
 
-router.get("/",citaGet);
+router.get("/",[
+    validarJWT,
+    esAdminRole
+],citaGet);
 
-router.get("/:id",citaGetById);
+router.get("/:id",[
+    validarJWT,
+    esAdminRole
+],citaGetById);
 
 router.post("/",[
     validarJWT,    

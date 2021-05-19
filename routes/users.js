@@ -6,16 +6,15 @@ const {
     validarCampos,
     validarJWT,
     esAdminRole,
-    tieneRole
 } = require('../middlewares');
-const { isRoleValid, emailExist, existUserById } = require('../helpers/users_db_validator');
+const { emailExist, existUserById } = require('../helpers/users_db_validator');
 
 const { userPost, userGet, userPut,userDelete,userGetById, misSolicitudes } = require("../controllers/userController");
 
 /* Route users listing. */
-router.get("/",userGet);
+router.get("/", userGet);
 
-router.get("/:id",userGetById);
+router.get("/:id", userGetById);
 
 router.get("/agragaciones/:id", misSolicitudes);
 
