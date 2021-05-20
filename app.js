@@ -18,6 +18,7 @@ const authRouter = require('./routes/auth');
 const solicitudRouter = require('./routes/solicitud');
 const likesRouter = require('./routes/likes');
 const citasRouter = require('./routes/cita');
+const emailRouter = require('./routes/email');
 
 const { dbConnection } = require('./database/config');
 const { initRolesDB } = require('./controllers/roleController');
@@ -53,6 +54,7 @@ app.use('/api/solicitud', solicitudRouter);
 app.use('/api/buscar', buscarRouter);
 app.use('/api/like', likesRouter);
 app.use('/api/cita', citasRouter);
+app.use('/api/email', emailRouter);
 
 
 // Conectar a la DB
