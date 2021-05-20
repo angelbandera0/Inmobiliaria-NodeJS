@@ -121,11 +121,17 @@ const casaBuscar = async (req, res = response) => {
   const { limite = 5, desde = 0 } = req.query;
   try {
     
-    const casa = await Casa.find(req.body)
-                           .skip(Number(desde))
-                           .limit(Number(limite))
-    
-    res.status(200).send({ casa });
+    const [total, casas] = await Promise.all([
+      Casa.countDocuments(req.body),
+      Casa.find(req.body)
+          .skip(Number(desde))
+          .limit(Number(limite)),
+    ]);
+  
+    res.status(200).send({
+      total: total,
+      casas: casas,
+    });
                    
   } catch (e) {
     res.status(400).send({
