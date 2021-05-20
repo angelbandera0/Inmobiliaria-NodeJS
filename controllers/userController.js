@@ -31,7 +31,7 @@ const userGetById = async (req = request, res = response) => {
   });
 };
 
-const misAgragaciones = async (req = request, res = response) => {
+const misAgregaciones = async (req = request, res = response) => {
   const { id } = req.params;
   const user = await User.findById(id)
                          .populate('solicitudes')
@@ -41,9 +41,9 @@ const misAgragaciones = async (req = request, res = response) => {
   
   res.status(200).send({
     user,
-    userSolicitudes: user.solicitudes,
-    userCasas: user.casas,
-    userCitas: user.citas,        
+    userSolicitudes: user.solicitudes ? user.solicitudes : [],
+    userCasas: user.casas ? user.casas : [],
+    userCitas: user.citas ? user.citas : [],        
   });
 }
 
@@ -135,4 +135,4 @@ const userDelete = async (req, res = response) => {
   }
 };
 
-module.exports = { userPost, userGet, userPut, userDelete,userGetById, misAgragaciones };
+module.exports = { userPost, userGet, userPut, userDelete,userGetById, misAgregaciones };
