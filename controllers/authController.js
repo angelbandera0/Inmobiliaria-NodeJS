@@ -48,7 +48,7 @@ const googleSignin = async (req, res = response) => {
   const { id_token } = req.body;
 
   try {
-    const { email, name, img } = await googleVerify(id_token);
+    const { email, name, image } = await googleVerify(id_token);
     let usuario = await User.findOne({ email }).populate("rol");
 
     if (!usuario) {
@@ -57,7 +57,7 @@ const googleSignin = async (req, res = response) => {
         name,
         email,
         password: ":P",
-        img,
+        image,
         google: true,
       };
 
