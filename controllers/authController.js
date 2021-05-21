@@ -44,11 +44,12 @@ const login = async (req, res = response) => {
 
 const googleSignin = async (req, res = response) => {
   console.log(req.body);
-  
+
   const { id_token } = req.body;
 
   try {
-    const { email, name, image } = await googleVerify(id_token);
+    const { email, name, img } = await googleVerify(id_token);
+
     let usuario = await User.findOne({ email }).populate("rol");
 
     if (!usuario) {
@@ -57,7 +58,7 @@ const googleSignin = async (req, res = response) => {
         name,
         email,
         password: ":P",
-        image,
+        image: img,
         google: true,
       };
 
@@ -66,7 +67,7 @@ const googleSignin = async (req, res = response) => {
       //Buscar el Rol en la DB
       const resRol = await Rol.findById(usuario.rol);
       //Asignar el user al array de user del rol
-      resRol.users.push(user);
+      resRol.users.push(newUser);
       //guardar cambios en el rol
       await resRol.save();
     }
