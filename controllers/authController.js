@@ -1,15 +1,15 @@
 const { response } = require("express");
 const bcryptjs = require("bcryptjs");
 
-const { User, Rol } = require("../models");
+const { User, Rol, Token } = require("../models");
 
 const { generarJWT } = require("../helpers/generar_jwt");
 const { googleVerify } = require("../helpers/google-verify");
+const { sendConfirm } = require("./emailController");
 
 const login = async (req, res = response) => {
   //obtiene el email y la contraseña q se le envia
   const { email, password } = req.body;
-  console.log(email, "assssssssssssssssssss");
   try {
     // Verificar si el email existe
     const usuario = await User.findOne({ email }).populate("rol");
@@ -85,8 +85,72 @@ const googleSignin = async (req, res = response) => {
     });
   }
 };
+const confirmAccount = async (req, res = response) => {
+  try {
+    const { token } = req.params;
+    const tokenCF = await Token.findOne({ token });
+    if (!tokenCF) {
+      res.status(401).send({
+        type: "not-verified",
+        msg: "No se ha podido encontrar un token válido. Su token puede que haya expirado.",
+      });
+    }
+    const user = await User.findById(tokenCF.userId);
+    if (!user)
+      return res.status(400).send({
+        type: "not-user",
+        msg: "No hemos encontrado un usario para este token.",
+      });
+    if (user.isVerified)
+      return res.status(400).send({
+        type: "already-verified",
+        msg: "This user has already been verified.",
+      });
+    // Verify and save the user
+    user.isVerified = true;
+    await user.save();
+    res
+      .status(200)
+      .send(
+        "La cuenta ha sido verificada correctamente. Por favor inicie sesión."
+      );
+  } catch (error) {
+    res.status(400).send({
+      type: "error-inesperado",
+      msg: "Ha ocurrido un error inesperado.",
+    });
+  }
+};
+const resendTokenVerification = async (req, res = response) => {
+  const { email } = req.body;
+  console.log(email);
+  const user = await User.findOne({ email });
+  console.log(user);
+
+  if (!user)
+    return res
+      .status(400)
+      .send({ msg: "No hemos encontrado un usario para este token." });
+  if (user.isVerified)
+    return res
+      .status(400)
+      .send({ msg: "This user has already been verified." });
+  const salt = bcryptjs.genSaltSync();
+  const token = new Token({
+    userId: user,
+    token: bcryptjs.hashSync(`${user.name}${Date.now()}`, salt),
+  });
+  const resToken = await token.save();
+  sendConfirm(req, user, token);
+
+  res.status(201).send({
+    msg: "Se ha reenviado el token exitosamente.",
+  });
+};
 
 module.exports = {
   login,
   googleSignin,
+  confirmAccount,
+  resendTokenVerification,
 };
