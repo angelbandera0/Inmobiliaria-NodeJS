@@ -4,6 +4,7 @@ const Solicitud = require('./solicitud');
 const Rol = require('./rol');
 const User = require('./user');
 const Like = require('./like');
+const Token = require('./token');
 
 
 
@@ -13,5 +14,6 @@ module.exports = {
     Casa,
     Rol,
     User,
-    Like
+    Like,
+    Token
 }
