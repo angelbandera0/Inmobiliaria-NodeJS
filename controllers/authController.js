@@ -148,9 +148,40 @@ const resendTokenVerification = async (req, res = response) => {
   });
 };
 
+const resetPassword = async (req, res = response) => {
+  const { token } = req.params;
+  let passwordResetToken = await Token.findOne({ token });
+  if (!passwordResetToken) {
+    throw new Error("Invalid or expired password reset token");
+  }
+  const isValid = await bcrypt.compare(token, passwordResetToken.token);
+  if (!isValid) {
+    throw new Error("Invalid or expired password reset token");
+  }
+  const salt = bcryptjs.genSaltSync();
+  const hash = bcryptjs.hashSync(password, salt);
+  await User.updateOne(
+    { _id: userId },
+    { $set: { password: hash } },
+    { new: true }
+  );
+  const user = await User.findById({ _id: token.userId });
+  
+  await passwordResetToken.deleteOne();
+  
+  const resToken = await generarJWT(user.id);
+
+  res.status(200).send({
+    user: user,
+    token: resToken,
+  });
+  
+};
+
 module.exports = {
   login,
   googleSignin,
   confirmAccount,
   resendTokenVerification,
+  resetPassword
 };

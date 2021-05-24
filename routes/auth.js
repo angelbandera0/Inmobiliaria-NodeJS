@@ -7,6 +7,7 @@ const {
   googleSignin,
   confirmAccount,
   resendTokenVerification,
+  resetPassword
 } = require("../controllers/authController");
 const { isVerified } = require("../helpers/users_db_validator");
 
@@ -37,5 +38,6 @@ router.post(
   [check("email", "El correo es obligatorio").isEmail(), validarCampos],
   resendTokenVerification
 );
+router.post("/resetPassword", resetPassword)
 
 module.exports = router;
