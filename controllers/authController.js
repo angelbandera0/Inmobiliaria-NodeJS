@@ -140,8 +140,19 @@ const resendTokenVerification = async (req, res = response) => {
     userId: user,
     token: bcryptjs.hashSync(`${user.name}${Date.now()}`, salt),
   });
+
+  const cuerpoCorreo = { 
+    subject :   "Token de Verificación de Cuenta",
+    text    :   "Hola "+user.name+",\n\n" +
+                "Por favor verifica tu cuenta haciendo click sobre este link: \nhttp://" +
+                req.headers.host +
+                "/api/auth/confirmation/" +
+                token.token +".\n",
+
+  }
+
   const resToken = await token.save();
-  sendConfirm(req, user, token);
+  sendConfirm(req, user, cuerpoCorreo, token);
 
   res.status(201).send({
     msg: "Se ha reenviado el token exitosamente.",

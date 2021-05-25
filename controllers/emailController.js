@@ -29,7 +29,7 @@ const send = (req, res = response) => {
   });
 };
 //recive el email destinatario y el objeto token
-const sendConfirm = (req,user, token) => {
+const sendConfirm = (req, user, correo, token) => {
   // Definimos el transporter
   var transporter = nodemailer.createTransport({
     service: "Gmail",
@@ -42,14 +42,8 @@ const sendConfirm = (req,user, token) => {
   var mailOptions = {
     from: process.env.GMAIL_USER,
     to: user.email,
-    subject: "Token de Verificación de Cuenta",
-    text:
-      "Hola "+user.name+",\n\n" +
-      "Por favor verifica tu cuenta dondo haciendo click sobre este link: \nhttp://" +
-      req.headers.host +
-      "/api/auth/confirmation/" +
-      token.token +
-      ".\n",
+    subject: correo.subject,
+    text: correo.text,
   };
   // Enviamos el email
   transporter.sendMail(mailOptions, function (error, info) {
