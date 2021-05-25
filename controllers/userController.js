@@ -50,12 +50,13 @@ const misAgregaciones = async (req = request, res = response) => {
 //Agregar Usuario
 const userPost = async (req, res = response) => {
   const { name, password, email } = req.body;
-  console.log(req);
   try {
+    let image;
+    if(req.files){
     //Subir la imagen al Cloudinary
     const urlImage = await subidaImagenCloudinary(req.files.archivo);
-    const image = urlImage;
-
+    image = urlImage;
+    }
     const user = new User({ name, password, email, image });
 
     // Encriptar la contraseña
@@ -77,7 +78,16 @@ const userPost = async (req, res = response) => {
       token: bcryptjs.hashSync(`${name}${Date.now()}`, salt),
     });
     const resToken = await token.save();
-    sendConfirm(req, resU, token);
+    const cuerpoCorreo = { 
+      subject :   "Token de Verificación de Cuenta",
+      text    :   "Hola "+resU.name+",\n\n" +
+                  "Por favor verifica tu cuenta haciendo click sobre este link: \nhttp://" +
+                  req.headers.host +
+                  "/api/auth/confirmation/" +
+                  token.token +".\n",
+  
+    }
+    sendConfirm(req, resU,cuerpoCorreo, token);
 
     res.status(201).send({
       msg: "Usuario creado correctamente",
@@ -104,13 +114,14 @@ const userPut = async (req, res = response) => {
     resto.updatedAt = Date.now();
 
     const user = await User.findById(id);
-
+    if(req.files){
     //Actualizar imagen en Cloudinary
     const urlImg = await actualizarImagenCloudinary(
       req.files.archivo,
       user.image
     );
     resto.image = urlImg;
+    }
 
     //actualizar usuario
     await user.update(resto);
@@ -120,6 +131,7 @@ const userPut = async (req, res = response) => {
 
     res.status(200).send({ msg: "User Actualizado Correctame" });
   } catch (e) {
+    console.log(e);
     res.status(400).send({ msg: "Ha ocurrido un error en la actualizacón" });
   }
 };
