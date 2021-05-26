@@ -1,7 +1,6 @@
 const { Schema, model } = require("mongoose");
 
 const CitaSchema = Schema({
-
   fecha: {
     type: Date,
   },
@@ -10,17 +9,17 @@ const CitaSchema = Schema({
 
   casa: { type: Schema.Types.ObjectId, ref: "Casa" },
 
-  detallesCita:{ type: String},
+  detallesCita: { type: String },
 
-  estado:{ type: String, default: "No aprobada"},
+  estado: { type: String, default: "No Aprobada" },
 
-  leida:{ type: Boolean, default: false},
+  leida: { type: Boolean, default: false },
 
   createdAt: {
     type: Date,
     default: Date.now(),
   },
-  
+
 });
 
 module.exports = model("Cita", CitaSchema);
