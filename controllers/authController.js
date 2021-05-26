@@ -152,7 +152,7 @@ const resendTokenVerification = async (req, res = response) => {
   }
 
   const resToken = await token.save();
-  sendConfirm(req, user, cuerpoCorreo, token);
+  sendConfirm( user, cuerpoCorreo);
 
   res.status(201).send({
     msg: "Se ha reenviado el token exitosamente.",
