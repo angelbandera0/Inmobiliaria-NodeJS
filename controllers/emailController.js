@@ -29,7 +29,7 @@ const send = (req, res = response) => {
   });
 };
 //recive el email destinatario y el objeto token
-const sendConfirm = (req, user, correo, token) => {
+const sendConfirm = (user, correo) => {
   // Definimos el transporter
   var transporter = nodemailer.createTransport({
     service: "Gmail",
