@@ -12,6 +12,7 @@ const {
     citaGetById,
     citaPost,
     citaPut,
+    citaConfirm,
     citaDelete} = require('../controllers/citaController');
 
 router.get("/",[
@@ -32,6 +33,11 @@ router.put("/:id",[
     validarJWT,
     esAdminRole
 ],citaPut);
+
+router.post("/citaConfirm/:id",[
+    validarJWT,
+    esAdminRole
+],citaConfirm);
 
 router.delete("/:id",[
     validarJWT, 
