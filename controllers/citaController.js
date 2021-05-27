@@ -20,7 +20,7 @@ const citaGet = async (req = request, res = response) => {
 
 const citaGetById = async (req = request, res = response) => {
   const { id } = req.params;
-  const cita = await Cita.findById(id);
+  const cita = await Cita.findById(id).populate("casa").populate("user");
 
   res.status(200).send({
     cita,
