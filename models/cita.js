@@ -11,7 +11,7 @@ const CitaSchema = Schema({
 
   detallesCita: { type: String },
 
-  estado: { type: String, default: "No Aprobada" },
+  estado: { type: String, default: "Pendiente" },
 
   leida: { type: Boolean, default: false },
 
