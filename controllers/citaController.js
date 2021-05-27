@@ -87,15 +87,16 @@ const citaConfirm = async (req = request, res = response) => {
     const cita = await Cita.findById(id);
     cita.estado = "Aprobada";
     cita.fecha = fecha;
-    await cita.save;
+    await cita.save();
 
+    const user = await User.findById(cita.user);
     const cuerpoCorreo = {
       subject: subject,
       text: text,
     };
-    sendConfirm(req.usuario, cuerpoCorreo);
+    sendConfirm(user, cuerpoCorreo);
 
-    res.status(200).send({ msg: "Lacita ha sido agendada" });
+    res.status(200).send({ msg: "La cita ha sido agendada" });
   } catch (e) {
     res.status(400).send({ msg: "Error", e });
   }
