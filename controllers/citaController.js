@@ -6,7 +6,10 @@ const citaGet = async (req = request, res = response) => {
   const { estado } = req.query;
   const [total, citas] = await Promise.all([
     Cita.countDocuments({ estado: estado }),
-    Cita.find({ estado: estado }).sort({ createdAt: -1 }).populate("casa").populate("user"),
+    Cita.find({ estado: estado })
+      .sort({ createdAt: -1 })
+      .populate("casa")
+      .populate("user"),
   ]);
 
   res.status(200).send({
@@ -71,7 +74,14 @@ const citaPut = async (req = request, res = response) => {
 const citaDelete = async (req = request, res = response) => {
   const { id } = req.params;
   try {
-    cita = await Cita.findByIdAndDelete(id);
+    const cita = await Cita.findByIdAndDelete(id);
+
+    const user = await User.findById(cita.user);
+    const cuerpoCorreo = {
+      subject: "Solicitud de cita denegada",
+      text: "En estos momentos no es posible agendar nuevas citas",
+    };
+    sendConfirm(user, cuerpoCorreo);
 
     res.status(200).send({ msg: "Casa eliminada correctamente" });
   } catch (e) {
@@ -87,6 +97,7 @@ const citaConfirm = async (req = request, res = response) => {
     const cita = await Cita.findById(id);
     cita.estado = "Aprobada";
     cita.fecha = fecha;
+    cita.detallesCita = text;
     await cita.save();
 
     const user = await User.findById(cita.user);
