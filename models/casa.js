@@ -62,6 +62,8 @@ const casaSchema = new Schema({
   tieneGaraje: { type: Boolean },
 
   tieneCarpoch: { type: Boolean },
+
+  vendida: { type: Boolean, default: false },
 });
 casaSchema.methods.toJSON = function () {
   const { __v, ...casa } = this.toObject();

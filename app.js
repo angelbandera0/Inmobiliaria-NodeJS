@@ -16,6 +16,7 @@ const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 const buscarRouter = require("./routes/buscar");
 const casasRouter = require("./routes/casas");
+const casasVendidasRouter = require("./routes/casaVendida");
 const authRouter = require("./routes/auth");
 const solicitudRouter = require("./routes/solicitud");
 const likesRouter = require("./routes/likes");
@@ -54,6 +55,7 @@ app.use(
 app.use("/", indexRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/casa", casasRouter);
+app.use("/api/vendidas", casasVendidasRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/solicitud", solicitudRouter);
 app.use("/api/buscar", buscarRouter);

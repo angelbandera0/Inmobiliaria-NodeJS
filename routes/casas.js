@@ -1,15 +1,24 @@
 var express = require("express");
-const {check}=require("express-validator");
+const { check } = require("express-validator");
 var router = express.Router();
 
 const {
-    validarCampos,
-    validarJWT,
-    esAdminRole,
-    tieneRole
-} = require('../middlewares');
-const {  existCasaById } = require('../helpers/casas_db_validator');
-const { casaPost, casaGet, casaPut, casaDelete, casaGetById, casaBuscar, casaGetUltimas  } = require("../controllers/casaController");
+  validarCampos,
+  validarJWT,
+  esAdminRole,
+  tieneRole,
+} = require("../middlewares");
+const { existCasaById } = require("../helpers/casas_db_validator");
+const {
+  casaPost,
+  casaGet,
+  casaPut,
+  casaDelete,
+  casaGetById,
+  casaBuscar,
+  casaGetUltimas,
+  casaVender,
+} = require("../controllers/casaController");
 
 router.get("/", casaGet);
 
@@ -19,27 +28,49 @@ router.get("/:id", casaGetById);
 
 router.post("/buscar", casaBuscar);
 
-router.post("/",[
+router.post(
+  "/",
+  [
     validarJWT,
     esAdminRole,
-    check('title', 'El título es obligatorio').not().isEmpty(),
-    validarCampos], 
-    casaPost);
+    check("title", "El título es obligatorio").not().isEmpty(),
+    validarCampos,
+  ],
+  casaPost
+);
 
-router.put("/:id",[
-    validarJWT,
-    esAdminRole,
-    check('id', 'No es un ID válido').isMongoId(),
-    check('id').custom( existCasaById ),
-    validarCampos], 
-    casaPut);
+router.post(
+    "/venta/:id",
+    [
+      validarJWT,
+      esAdminRole,
+      validarCampos,
+    ],
+    casaVender
+  );
 
-router.delete("/:id",[
+router.put(
+  "/:id",
+  [
     validarJWT,
     esAdminRole,
-    check('id', 'No es un ID válido').isMongoId(),
-    check('id').custom( existCasaById ),
-    validarCampos], 
-    casaDelete)
+    check("id", "No es un ID válido").isMongoId(),
+    check("id").custom(existCasaById),
+    validarCampos,
+  ],
+  casaPut
+);
+
+router.delete(
+  "/:id",
+  [
+    validarJWT,
+    esAdminRole,
+    check("id", "No es un ID válido").isMongoId(),
+    check("id").custom(existCasaById),
+    validarCampos,
+  ],
+  casaDelete
+);
 
 module.exports = router;

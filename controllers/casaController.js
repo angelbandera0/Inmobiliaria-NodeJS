@@ -5,7 +5,7 @@ const {
   actualizarImagenCloudinary,
   eliminarImagenCloudinary,
 } = require("./subidasController");
-const { Casa, User } = require("../models");
+const { Casa, User, CasaVendida } = require("../models");
 
 const casaGet = async (req = request, res = response) => {
   const [total, casas] = await Promise.all([
@@ -140,6 +140,29 @@ const casaBuscar = async (req, res = response) => {
   }
 };
 
+const casaVender = async ( req, res = response) => {
+  const { id } = req.params;
+  const { precioVenta }  = req.body
+  try{
+    const resCasa = await Casa.findById(id);
+    resCasa.vendida = true;
+    await resCasa.save();
+    const comision = precioVenta*5/100;
+    
+    const data = {
+      casa : id,
+      precioVenta,
+      comision,
+    }
+    const casaVendida = new CasaVendida(data);
+    await casaVendida.save();
+
+    res.status(200).send({ casaVendida});
+  }catch(e){
+    res.status(400).send({ msg : "Error", e});
+  }
+}
+
 module.exports = {
   casaPost,
   casaGet,
@@ -148,4 +171,5 @@ module.exports = {
   casaGetById,
   casaBuscar,
   casaGetUltimas,
+  casaVender,
 };
