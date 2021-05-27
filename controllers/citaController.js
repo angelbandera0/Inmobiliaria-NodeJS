@@ -17,7 +17,7 @@ const citaGet = async (req = request, res = response) => {
 
 const citaGetById = async (req = request, res = response) => {
   const { id } = req.params;
-  const cita = await Cita.findById(id);
+  const cita = await Cita.findById(id).populate("casa").populate("user");
 
   res.status(200).send({
     cita,
@@ -95,7 +95,7 @@ const citaConfirm = async (req = request, res = response) => {
     };
     sendConfirm(req.usuario, cuerpoCorreo);
 
-    res.status(200).send({ msg: "Lacita ha sido agendada" });
+    res.status(200).send({ msg: "La cita ha sido agendada" });
   } catch (e) {
     res.status(400).send({ msg: "Error", e });
   }
