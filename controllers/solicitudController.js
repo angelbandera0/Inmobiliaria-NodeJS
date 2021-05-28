@@ -25,7 +25,7 @@ const solicitudGet = async (req = request, res = response) => {
 
 const solicitudGetById = async (req = request, res = response) => {
   const { id } = req.params;
-  const solicitud = await Solicitud.findById(id);
+  const solicitud = await Solicitud.findById(id).populate('user');
 
   res.status(200).send({
     solicitud: solicitud,
