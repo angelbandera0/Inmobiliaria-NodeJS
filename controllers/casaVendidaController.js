@@ -26,6 +26,7 @@ const casaVendidaPut = async ( req, res) => {
     const { id } = req.params;
     const {_id, ...data } = req.body;
     try{
+        data.updatedAt = Date.now();
         const casa = await CasaVendida.findByIdAndUpdate( id , data);
         res.status(200).send({
             casa
