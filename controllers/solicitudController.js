@@ -9,9 +9,12 @@ const { sendConfirm } = require("./emailController");
 const { Solicitud, User } = require("../models");
 
 const solicitudGet = async (req = request, res = response) => {
+  const { estado } = req.query;
   const [total, solicitudes] = await Promise.all([
-    Solicitud.countDocuments(),
-    Solicitud.find().populate("user", "name"),
+    Solicitud.countDocuments({ estado: estado }),
+    Solicitud.find({ estado: estado })
+      .sort({ createdAt: -1 })
+      .populate("user"),
   ]);
 
   res.status(200).send({
