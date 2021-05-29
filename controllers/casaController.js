@@ -42,12 +42,12 @@ const casaGetById = async (req = request, res = response) => {
 
 //Agregar Casa
 const casaPost = async (req, res = response) => {
-  
   try {
     const { ...data } = req.body;
-
-    const urlImage = await subidaImagenCloudinary(req.files.archivo);
-
+    const urlImage = "";
+    if (req.files != null) {
+      urlImage = await subidaImagenCloudinary(req.files.archivo);
+    }
     const casa = new Casa(data);
     casa.img = urlImage;
 
@@ -120,19 +120,15 @@ const casaDelete = async (req, res = response) => {
 const casaBuscar = async (req, res = response) => {
   const { limite = 5, desde = 0 } = req.query;
   try {
-    
     const [total, casas] = await Promise.all([
       Casa.countDocuments(req.body),
-      Casa.find(req.body)
-          .skip(Number(desde))
-          .limit(Number(limite)),
+      Casa.find(req.body).skip(Number(desde)).limit(Number(limite)),
     ]);
-  
+
     res.status(200).send({
       total: total,
       casas: casas,
     });
-                   
   } catch (e) {
     res.status(400).send({
       Error: e,
@@ -140,28 +136,28 @@ const casaBuscar = async (req, res = response) => {
   }
 };
 
-const casaVender = async ( req, res = response) => {
+const casaVender = async (req, res = response) => {
   const { id } = req.params;
-  const { precioVenta }  = req.body
-  try{
+  const { precioVenta } = req.body;
+  try {
     const resCasa = await Casa.findById(id);
     resCasa.vendida = true;
     await resCasa.save();
-    const comision = precioVenta*5/100;
-    
+    const comision = (precioVenta * 5) / 100;
+
     const data = {
-      casa : id,
+      casa: id,
       precioVenta,
       comision,
-    }
+    };
     const casaVendida = new CasaVendida(data);
     await casaVendida.save();
 
-    res.status(200).send({ casaVendida});
-  }catch(e){
-    res.status(400).send({ msg : "Error", e});
+    res.status(200).send({ casaVendida });
+  } catch (e) {
+    res.status(400).send({ msg: "Error", e });
   }
-}
+};
 
 module.exports = {
   casaPost,
