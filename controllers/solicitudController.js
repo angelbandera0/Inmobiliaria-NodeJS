@@ -6,15 +6,14 @@ const {
   eliminarImagenCloudinary,
 } = require("./subidasController");
 const { sendConfirm } = require("./emailController");
+const { casaPost } = require("./casaController");
 const { Solicitud, User } = require("../models");
 
 const solicitudGet = async (req = request, res = response) => {
   const { estado } = req.query;
   const [total, solicitudes] = await Promise.all([
     Solicitud.countDocuments({ estado: estado }),
-    Solicitud.find({ estado: estado })
-      .sort({ createdAt: -1 })
-      .populate("user"),
+    Solicitud.find({ estado: estado }).sort({ createdAt: -1 }).populate("user"),
   ]);
 
   res.status(200).send({
@@ -25,7 +24,7 @@ const solicitudGet = async (req = request, res = response) => {
 
 const solicitudGetById = async (req = request, res = response) => {
   const { id } = req.params;
-  const solicitud = await Solicitud.findById(id).populate('user');
+  const solicitud = await Solicitud.findById(id).populate("user");
 
   res.status(200).send({
     solicitud: solicitud,
@@ -36,9 +35,10 @@ const solicitudGetById = async (req = request, res = response) => {
 const solicitudPost = async (req, res = response) => {
   try {
     const { ...data } = req.body;
-
-    const urlImage = await subidaImagenCloudinary(req.files.archivo);
-    //const img = urlImage;
+    const urlImage = "";
+    if (req.files != null) {
+      const urlImage = await subidaImagenCloudinary(req.files.archivo);
+    }
     const solicitud = new Solicitud(data);
     solicitud.img = urlImage;
 
@@ -129,10 +129,35 @@ const solicitudDelete = async (req, res = response) => {
   }
 };
 
+const solicitudConfirm = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const solicitud = await Solicitud.findById(id);
+    console.log(solicitud);
+    solicitud.estado = "Aprobada";
+    await solicitud.save();
+    //Enviar notificacion al correo
+    const user = await User.findById(solicitud.user);
+    const cuerpoCorreo = {
+      subject: "Publicación aceptada",
+      text: "Su solicitud para publicar su anuncio ha sido aceptada",
+    };
+    sendConfirm(user, cuerpoCorreo);
+    casaPost(req, res);
+  } catch (e) {
+    console.log(e);
+    res.status(400).send({
+      msg: "Ha ocurrido un error",
+    });
+  }
+};
+
 module.exports = {
   solicitudPost,
   solicitudGet,
   solicitudPut,
   solicitudDelete,
   solicitudGetById,
+  solicitudConfirm,
 };

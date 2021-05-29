@@ -32,6 +32,7 @@ const solicitudSchema = new Schema({
   leida: { type: Boolean, default: false },
 
   description: { type: String },
+  
   title: { type: String },
 
   numTelefonoPropietario: { type: Number },
