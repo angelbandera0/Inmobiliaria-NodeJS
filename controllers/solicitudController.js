@@ -35,9 +35,9 @@ const solicitudGetById = async (req = request, res = response) => {
 const solicitudPost = async (req, res = response) => {
   try {
     const { ...data } = req.body;
-    const urlImage = "";
+    let urlImage = "";
     if (req.files != null) {
-      const urlImage = await subidaImagenCloudinary(req.files.archivo);
+      urlImage = await subidaImagenCloudinary(req.files.archivo);
     }
     const solicitud = new Solicitud(data);
     solicitud.img = urlImage;
