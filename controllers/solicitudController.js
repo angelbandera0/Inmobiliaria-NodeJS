@@ -26,6 +26,9 @@ const solicitudGetById = async (req = request, res = response) => {
   const { id } = req.params;
   const solicitud = await Solicitud.findById(id).populate("user");
 
+  if (!solicitud.leida) {
+    solicitud.leida = true;
+  }
   res.status(200).send({
     solicitud: solicitud,
   });
