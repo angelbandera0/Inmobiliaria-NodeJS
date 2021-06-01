@@ -22,6 +22,7 @@ const solicitudRouter = require("./routes/solicitud");
 const likesRouter = require("./routes/likes");
 const citasRouter = require("./routes/cita");
 const emailRouter = require("./routes/email");
+const estadisticasRouter = require("./routes/estadisticas");
 
 //import db
 const { dbConnection } = require("./database/config");
@@ -62,6 +63,7 @@ app.use("/api/buscar", buscarRouter);
 app.use("/api/like", likesRouter);
 app.use("/api/cita", citasRouter);
 app.use("/api/email", emailRouter);
+app.use("/api/estadisticas", estadisticasRouter);
 
 // Conectar a la DB
 dbConnection();
