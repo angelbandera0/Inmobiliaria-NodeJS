@@ -1,30 +1,32 @@
 const { request, response } = require("express");
 const { User, Casa, Like } = require("../models");
-
+const mongoose = require("mongoose");
 //agrega un like
 const addLike = async (req = request, res = response) => {
   try {
     const { idCasa } = req.body;
     const idUser = req.usuario._id;
-    //busca el user y la planta
-    const [casa, user] = await Promise.all([
-      Casa.findById(idCasa),
-      User.findById(idUser),
-    ]);
-    //registra el nuevo like
-    console.log(casa);
-    const newLike = new Like({ casa, user });
+    //crear el nuevo like
+    const newLike = new Like({
+      casa: mongoose.Types.ObjectId(idCasa),
+      user: mongoose.Types.ObjectId(idUser),
+    });
+    //add like
     const resp = await newLike.save();
-    //console.log(resp);
-    //actualiza los likes del user y la planta
-    casa.likes.push(resp);
-    user.myLikes.push(resp);
-    await Promise.all([casa.save(), user.save()]);
-    //retorna los valores
+
+    //update userLikes and casaLikes
+    const [a, b] = await Promise.all([
+      User.updateOne({ _id: idUser }, { $push: { myLikes: resp._id } }),
+      await Casa.updateOne({ _id: idUser }, { $push: { likes: resp._id } }),
+    ]);
+    
+    //envio de respuesta
     res.status(200).send({ like: resp });
   } catch (e) {
     console.log(e);
-    res.status(400).send({ msg: "Ha ocurrido un error a la hora de dar un like" });
+    res
+      .status(400)
+      .send({ msg: "Ha ocurrido un error a la hora de dar un like" });
   }
 };
 
