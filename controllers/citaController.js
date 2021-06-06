@@ -20,8 +20,15 @@ const citaGet = async (req = request, res = response) => {
 
 const citaGetById = async (req = request, res = response) => {
   const { id } = req.params;
-  const cita = await Cita.findById(id).populate("casa").populate("user");
-
+  const cita = await Cita.findOneAndUpdate(
+    { _id: id },
+    { leida: true },
+    {
+      new: true,
+    }
+  )
+    .populate("casa")
+    .populate("user");
   res.status(200).send({
     cita,
   });

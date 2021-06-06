@@ -24,8 +24,9 @@ const solicitudGet = async (req = request, res = response) => {
 
 const solicitudGetById = async (req = request, res = response) => {
   const { id } = req.params;
-  const solicitud = await Solicitud.findById(id).populate("user");
-
+  const solicitud = await Solicitud.findOneAndUpdate({_id:id}, {leida:true}, {
+    new: true
+  });
   res.status(200).send({
     solicitud: solicitud,
   });
@@ -59,6 +60,7 @@ const solicitudPost = async (req, res = response) => {
       msg: "Solicitud creada correctame",
     });
   } catch (e) {
+    console.log(e);
     res.status(400).send({ msg: "Ha ocurrido un error al adicionar" });
   }
 };
