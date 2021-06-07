@@ -1,6 +1,7 @@
 const { request, response } = require("express");
 const { User, Casa, Cita } = require("../models");
 const { sendConfirm } = require("./emailController");
+const mongoose = require("mongoose");
 
 const citaGet = async (req = request, res = response) => {
   const { estado } = req.query;
@@ -20,13 +21,6 @@ const citaGet = async (req = request, res = response) => {
 
 const citaGetById = async (req = request, res = response) => {
   const { id } = req.params;
-<<<<<<< HEAD
-  const cita = await Cita.findById(id).populate("casa").populate("user");
-
-  if (!cita.leida) {
-    cita.leida = true;
-  }
-=======
   const cita = await Cita.findOneAndUpdate(
     { _id: id },
     { leida: true },
@@ -36,7 +30,6 @@ const citaGetById = async (req = request, res = response) => {
   )
     .populate("casa")
     .populate("user");
->>>>>>> main
   res.status(200).send({
     cita,
   });
@@ -47,20 +40,21 @@ const citaPost = async (req = request, res = response) => {
   const idUser = req.usuario._id;
 
   try {
-    const [casa, user] = await Promise.all([
-      Casa.findById(idCasa),
-      User.findById(idUser),
-    ]);
     //registra la nueva cita
     const newCita = new Cita({ casa, user });
+    //crear la nuevo cita
+    const newCita = new Cita({
+      casa: mongoose.Types.ObjectId(idCasa),
+      user: mongoose.Types.ObjectId(idUser),
+    });
+    //add cita
     const resp = await newCita.save();
-    //console.log(resp);
-    //actualiza las citas del user y la casa
-    casa.citas.push(resp);
-    user.citas.push(resp);
-    console.log("fgsdddddddshdshshhhhhhhhhtrrthwhtrw");
-    await casa.save();
-    await user.save();
+    
+    //update userCitas and casaCitas
+    const [a, b] = await Promise.all([
+      User.updateOne({ _id: idUser }, { $push: { citas: resp._id } }),
+      await Casa.updateOne({ _id: idCasa }, { $push: { citas: resp._id } }),
+    ]);
     //retorna los valores
     res.status(200).send({ cita: resp });
   } catch (e) {
