@@ -22,7 +22,7 @@ router.get("/",[
 
 router.get("/:id",[
     validarJWT,
-    esAdminRole
+    //esAdminRole
 ],citaGetById);
 
 router.post("/",[
