@@ -15,7 +15,7 @@ const {
 
 router.get("/", solicitudGet);
 
-router.get("/:id", solicitudGetById);
+router.get("/:id",[validarJWT], solicitudGetById);
 
 router.post(
   "/",

@@ -24,17 +24,21 @@ const solicitudGet = async (req = request, res = response) => {
 
 const solicitudGetById = async (req = request, res = response) => {
   const { id } = req.params;
-<<<<<<< HEAD
-  const solicitud = await Solicitud.findById(id).populate("user");
+  const { usuario } = req;
+  let solicitud;
 
-  if (!solicitud.leida) {
-    solicitud.leida = true;
+  if (usuario.rol.rol !== "ADMIN_ROLE") {
+    solicitud = await Solicitud.findById(id).populate("casa").populate("user");
+  } else {
+    solicitud = await Solicitud.findOneAndUpdate(
+      { _id: id },
+      { leida: true },
+      {
+        new: true,
+      }
+    );
   }
-=======
-  const solicitud = await Solicitud.findOneAndUpdate({_id:id}, {leida:true}, {
-    new: true
-  });
->>>>>>> main
+
   res.status(200).send({
     solicitud: solicitud,
   });
