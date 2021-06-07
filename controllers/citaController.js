@@ -6,8 +6,8 @@ const mongoose = require("mongoose");
 const citaGet = async (req = request, res = response) => {
   const { estado } = req.query;
   const [total, citas] = await Promise.all([
-    Cita.countDocuments(),
-    Cita.find() //{ estado: estado }
+    Cita.countDocuments({ estado: estado }),
+    Cita.find({ estado: estado }) 
       .sort({ createdAt: -1 })
       .populate("casa")
       .populate("user"),
