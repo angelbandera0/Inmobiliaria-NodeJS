@@ -6,8 +6,8 @@ const mongoose = require("mongoose");
 const citaGet = async (req = request, res = response) => {
   const { estado } = req.query;
   const [total, citas] = await Promise.all([
-    Cita.countDocuments({ estado: estado }),
-    Cita.find({ estado: estado })
+    Cita.countDocuments(),
+    Cita.find() //{ estado: estado }
       .sort({ createdAt: -1 })
       .populate("casa")
       .populate("user"),
@@ -21,15 +21,23 @@ const citaGet = async (req = request, res = response) => {
 
 const citaGetById = async (req = request, res = response) => {
   const { id } = req.params;
-  const cita = await Cita.findOneAndUpdate(
-    { _id: id },
-    { leida: true },
-    {
-      new: true,
-    }
-  )
-    .populate("casa")
-    .populate("user");
+  const { usuario } = req;
+  let cita;
+
+  if (usuario.rol.rol !== "ADMIN_ROLE") {
+    cita = await Cita.findById(id).populate("casa").populate("user");
+  } else {
+    cita = await Cita.findOneAndUpdate(
+      { _id: id },
+      { leida: true },
+      {
+        new: true,
+      }
+    )
+      .populate("casa")
+      .populate("user");
+  }
+
   res.status(200).send({
     cita,
   });
@@ -41,7 +49,6 @@ const citaPost = async (req = request, res = response) => {
 
   try {
     //registra la nueva cita
-    const newCita = new Cita({ casa, user });
     //crear la nuevo cita
     const newCita = new Cita({
       casa: mongoose.Types.ObjectId(idCasa),
@@ -49,7 +56,7 @@ const citaPost = async (req = request, res = response) => {
     });
     //add cita
     const resp = await newCita.save();
-    
+
     //update userCitas and casaCitas
     const [a, b] = await Promise.all([
       User.updateOne({ _id: idUser }, { $push: { citas: resp._id } }),
