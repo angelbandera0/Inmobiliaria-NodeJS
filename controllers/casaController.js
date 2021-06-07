@@ -44,7 +44,10 @@ const casaGetById = async (req = request, res = response) => {
 const casaPost = async (req, res = response) => {
   try {
     const { ...data } = req.body;
-    const urlImage = "";
+    let urlImage = "";
+    if(req.body.img){
+      urlImage = req.body.img;
+    }
     if (req.files != null) {
       urlImage = await subidaImagenCloudinary(req.files.archivo);
     }
@@ -68,6 +71,7 @@ const casaPost = async (req, res = response) => {
       msg: "Casa creada correctame",
     });
   } catch (e) {
+    console.log(e)
     res.status(400).send({ msg: "Ha ocurrido un error al adicionar" });
   }
 };

@@ -10,12 +10,21 @@ const send = (req, res = response) => {
       pass: process.env.GMAIL_PASSWORD,
     },
   });
+  let aux;
+  if (process.env.NODE_ENV === "development") {
+    aux="Dev Mode";
+  }
+  
+  if (process.env.NODE_ENV === "production") {
+    aux="Prod Mode";
+    
+  }
   // Definimos el email
   var mailOptions = {
     from: process.env.GMAIL_USER,
-    to: "jorgedelatorredelarosa@gmail.com",
+    to: "angelbandera0@gmail.com",
     subject: "Asunto",
-    text: "Contenido del email",
+    text: "Contenido del email"+aux,
   };
   // Enviamos el email
   transporter.sendMail(mailOptions, function (error, info) {

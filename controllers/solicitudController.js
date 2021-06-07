@@ -24,11 +24,17 @@ const solicitudGet = async (req = request, res = response) => {
 
 const solicitudGetById = async (req = request, res = response) => {
   const { id } = req.params;
+<<<<<<< HEAD
   const solicitud = await Solicitud.findById(id).populate("user");
 
   if (!solicitud.leida) {
     solicitud.leida = true;
   }
+=======
+  const solicitud = await Solicitud.findOneAndUpdate({_id:id}, {leida:true}, {
+    new: true
+  });
+>>>>>>> main
   res.status(200).send({
     solicitud: solicitud,
   });
@@ -38,9 +44,9 @@ const solicitudGetById = async (req = request, res = response) => {
 const solicitudPost = async (req, res = response) => {
   try {
     const { ...data } = req.body;
-    const urlImage = "";
+    let urlImage = "";
     if (req.files != null) {
-      const urlImage = await subidaImagenCloudinary(req.files.archivo);
+      urlImage = await subidaImagenCloudinary(req.files.archivo);
     }
     const solicitud = new Solicitud(data);
     solicitud.img = urlImage;
@@ -62,6 +68,7 @@ const solicitudPost = async (req, res = response) => {
       msg: "Solicitud creada correctame",
     });
   } catch (e) {
+    console.log(e);
     res.status(400).send({ msg: "Ha ocurrido un error al adicionar" });
   }
 };

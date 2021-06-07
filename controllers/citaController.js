@@ -20,11 +20,23 @@ const citaGet = async (req = request, res = response) => {
 
 const citaGetById = async (req = request, res = response) => {
   const { id } = req.params;
+<<<<<<< HEAD
   const cita = await Cita.findById(id).populate("casa").populate("user");
 
   if (!cita.leida) {
     cita.leida = true;
   }
+=======
+  const cita = await Cita.findOneAndUpdate(
+    { _id: id },
+    { leida: true },
+    {
+      new: true,
+    }
+  )
+    .populate("casa")
+    .populate("user");
+>>>>>>> main
   res.status(200).send({
     cita,
   });
