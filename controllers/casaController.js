@@ -21,8 +21,8 @@ const casaGet = async (req = request, res = response) => {
 
 const casaGetUltimas = async (req = request, res = response) => {
   const [total, casas] = await Promise.all([
-    Casa.countDocuments(),
-    Casa.find().sort({ createdAt: -1 }).limit(Number(10)),
+    Casa.countDocuments({vendida:false}),
+    Casa.find({vendida:false}).sort({ createdAt: -1 }).limit(Number(12)),
   ]);
 
   res.status(200).send({
