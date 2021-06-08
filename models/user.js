@@ -11,6 +11,9 @@ const userSchema = new Schema({
     type: String,
     required: [true, "La contraseña es obligatoria"],
   },
+  passwordHash: {
+    type: String,    
+  },
   email: {
     type: String,
     required: [true, "El email es obligatorio"],

@@ -85,6 +85,7 @@ const googleSignin = async (req, res = response) => {
     });
   }
 };
+
 const confirmAccount = async (req, res = response) => {
   try {
     const { token } = req.params;
@@ -121,6 +122,7 @@ const confirmAccount = async (req, res = response) => {
     });
   }
 };
+
 const resendTokenVerification = async (req, res = response) => {
   const { email } = req.body;
   console.log(email);
@@ -141,18 +143,21 @@ const resendTokenVerification = async (req, res = response) => {
     token: bcryptjs.hashSync(`${user.name}${Date.now()}`, salt),
   });
 
-  const cuerpoCorreo = { 
-    subject :   "Token de Verificación de Cuenta",
-    text    :   "Hola "+user.name+",\n\n" +
-                "Por favor verifica tu cuenta haciendo click sobre este link: \nhttp://" +
-                req.headers.host +
-                "/api/auth/confirmation/" +
-                token.token +".\n",
-
-  }
+  const cuerpoCorreo = {
+    subject: "Token de Verificación de Cuenta",
+    text:
+      "Hola " +
+      user.name +
+      ",\n\n" +
+      "Por favor verifica tu cuenta haciendo click sobre este link: \nhttp://" +
+      req.headers.host +
+      "/api/auth/confirmation/" +
+      token.token +
+      ".\n",
+  };
 
   const resToken = await token.save();
-  sendConfirm( user, cuerpoCorreo);
+  sendConfirm(user, cuerpoCorreo);
 
   res.status(201).send({
     msg: "Se ha reenviado el token exitosamente.",
@@ -160,33 +165,77 @@ const resendTokenVerification = async (req, res = response) => {
 };
 
 const resetPassword = async (req, res = response) => {
-  const { token } = req.params;
-  let passwordResetToken = await Token.findOne({ token });
-  if (!passwordResetToken) {
-    throw new Error("Invalid or expired password reset token");
+  const { token } = req.query;
+  const { password } = req.body;
+  let user = await User.findOne({ passwordHash: token });
+  if (!user) {
+    throw new Error("Invalid password reset token");
   }
-  const isValid = await bcrypt.compare(token, passwordResetToken.token);
-  if (!isValid) {
-    throw new Error("Invalid or expired password reset token");
-  }
+  
   const salt = bcryptjs.genSaltSync();
   const hash = bcryptjs.hashSync(password, salt);
-  await User.updateOne(
-    { _id: userId },
+
+  const userUpdated = await User.updateOne(
+    { passwordHash: token},
     { $set: { password: hash } },
     { new: true }
-  );
-  const user = await User.findById({ _id: token.userId });
+  );  
   
-  await passwordResetToken.deleteOne();
-  
-  const resToken = await generarJWT(user.id);
-
   res.status(200).send({
-    user: user,
-    token: resToken,
+    user: userUpdated    
   });
-  
+};
+
+const requestSetPassword = async (req, res = response) => {
+  try {
+    const { email } = req.body;
+    console.log(email);
+
+    const user = await User.findOne({ email });
+    console.log(user);
+    // Generar Hash
+    const salt = bcryptjs.genSaltSync();
+    const hash = bcryptjs.hashSync(`${user.name}${Date.now()}`, salt);
+
+    //Establecer hash
+    await User.updateOne(
+      { email: email },
+      { $set: { passwordHash: hash } },
+      { new: true }
+    );
+    //url link
+    let link;
+    if (process.env.NODE_ENV === "development") {
+      link = process.env.FRONT_URL_DEV;
+    }
+    if (process.env.NODE_ENV === "production") {
+      link = process.env.FRONT_URL_PROD;
+    }
+
+    //envio del correo
+    const cuerpoCorreo = {
+      subject: "Cambio de contraseña",
+      text:
+        "Hola " +
+        user.name +
+        ",\n\n" +
+        "Por favor, para cambiar la contraseña dar click sobre este link: \n" +
+        link +
+        "/auth/changepassword?token=" +
+        hash +
+        ".\n",
+    };
+    console.log(hash);
+    sendConfirm(user, cuerpoCorreo);
+    res.status(201).send({
+      msg: "Se ha enviado el email de cambio de contraseña correctamente. Revice su correo.",
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(400).send({
+      msg: "Ha ocurrido un error al solicitar el email de cambio de contraseña.",
+    });
+  }
 };
 
 module.exports = {
@@ -194,5 +243,6 @@ module.exports = {
   googleSignin,
   confirmAccount,
   resendTokenVerification,
-  resetPassword
+  resetPassword,
+  requestSetPassword,
 };

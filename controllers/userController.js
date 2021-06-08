@@ -87,7 +87,7 @@ const userPost = async (req, res = response) => {
                   token.token +".\n",
   
     }
-    sendConfirm(req, resU,cuerpoCorreo, token);
+    sendConfirm(resU,cuerpoCorreo);
 
     res.status(201).send({
       msg: "Usuario creado correctamente",
