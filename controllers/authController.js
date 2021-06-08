@@ -88,7 +88,7 @@ const googleSignin = async (req, res = response) => {
 
 const confirmAccount = async (req, res = response) => {
   try {
-    const { token } = req.params;
+    const { token } = req.query;
     const tokenCF = await Token.findOne({ token });
     if (!tokenCF) {
       res.status(401).send({
@@ -143,15 +143,24 @@ const resendTokenVerification = async (req, res = response) => {
     token: bcryptjs.hashSync(`${user.name}${Date.now()}`, salt),
   });
 
+
+  let link;
+  if (process.env.NODE_ENV === "development") {
+    link = process.env.BACK_URL_DEV;
+  }
+  if (process.env.NODE_ENV === "production") {
+    link = process.env.FRONT_URL_PROD;
+  }
+
   const cuerpoCorreo = {
     subject: "Token de Verificación de Cuenta",
     text:
       "Hola " +
       user.name +
       ",\n\n" +
-      "Por favor verifica tu cuenta haciendo click sobre este link: \nhttp://" +
-      req.headers.host +
-      "/api/auth/confirmation/" +
+      "Por favor verifica tu cuenta haciendo click sobre este link: " +
+      link +
+      "/api/auth/confirmation?token=" +
       token.token +
       ".\n",
   };

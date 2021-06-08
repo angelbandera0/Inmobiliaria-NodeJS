@@ -32,7 +32,7 @@ router.post(
   ],
   googleSignin
 );
-router.get("/confirmation/:token", confirmAccount);
+router.get("/confirmation", confirmAccount);
 router.post(
   "/resendemail",
   [check("email", "El correo es obligatorio").isEmail(), validarCampos],

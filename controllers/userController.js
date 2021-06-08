@@ -78,12 +78,21 @@ const userPost = async (req, res = response) => {
       token: bcryptjs.hashSync(`${name}${Date.now()}`, salt),
     });
     const resToken = await token.save();
+
+    let link;
+    if (process.env.NODE_ENV === "development") {
+      link = process.env.BACK_URL_DEV;
+    }
+    if (process.env.NODE_ENV === "production") {
+      link = process.env.FRONT_URL_PROD;
+    }
+
     const cuerpoCorreo = { 
       subject :   "Token de Verificación de Cuenta",
       text    :   "Hola "+resU.name+",\n\n" +
-                  "Por favor verifica tu cuenta haciendo click sobre este link: \nhttp://" +
-                  req.headers.host +
-                  "/api/auth/confirmation/" +
+                  "Por favor verifica tu cuenta haciendo click sobre este link: " +
+                  link +
+                  "/api/auth/confirmation?token=" +
                   token.token +".\n",
   
     }
