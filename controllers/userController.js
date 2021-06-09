@@ -6,7 +6,7 @@ const {
   eliminarImagenCloudinary,
 } = require("./subidasController");
 const { sendConfirm } = require("./emailController");
-const { User, Rol, Token } = require("../models");
+const { User, Rol, Token, Like } = require("../models");
 
 //obtener listado de usuarios de forma paginada
 //limite y desde son parametros pasados por la url
@@ -46,6 +46,22 @@ const misAgregaciones = async (req = request, res = response) => {
     userCitas: user.citas ? user.citas : [],
   });
 };
+
+const misCasasFavoritas = async ( req = request, res = response) => {
+  const { _id } = req.usuario;
+  
+  try{
+    const likes = await Like.find({ user : _id}).populate('casa');
+    res.status(200).send({
+      total : likes.length,
+      likes,
+    })
+  }catch(e){
+    res.status(500).send({
+      msg : "Ha ocurrido un error"
+    })
+  }
+}
 
 //Agregar Usuario
 const userPost = async (req, res = response) => {
@@ -162,11 +178,14 @@ const userDelete = async (req, res = response) => {
   }
 };
 
+
+
 module.exports = {
   userPost,
   userGet,
   userPut,
   userDelete,
   userGetById,
-  misAgregaciones,  
+  misAgregaciones,
+  misCasasFavoritas  
 };
