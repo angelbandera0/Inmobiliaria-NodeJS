@@ -1,6 +1,9 @@
 const { Router } = require("express");
-const { buscar } = require("../controllers/buscarController");
+const { cantPendientes } = require("../controllers/estadisticasController");
 
 const router = Router();
+
+
+router.get('/cantPendientes', cantPendientes)
 
 module.exports = router;
