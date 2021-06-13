@@ -110,12 +110,15 @@ const confirmAccount = async (req, res = response) => {
     // Verify and save the user
     user.isVerified = true;
     await user.save();
+    global.io.emit("confirm", { msg: true });
     res
       .status(200)
       .send(
         "La cuenta ha sido verificada correctamente. Por favor inicie sesión."
       );
   } catch (error) {
+    global.io.emit("confirm", { msg: false });
+
     res.status(400).send({
       type: "error-inesperado",
       msg: "Ha ocurrido un error inesperado.",
@@ -142,7 +145,6 @@ const resendTokenVerification = async (req, res = response) => {
     userId: user,
     token: bcryptjs.hashSync(`${user.name}${Date.now()}`, salt),
   });
-
 
   let link;
   if (process.env.NODE_ENV === "development") {
@@ -180,18 +182,18 @@ const resetPassword = async (req, res = response) => {
   if (!user) {
     throw new Error("Invalid password reset token");
   }
-  
+
   const salt = bcryptjs.genSaltSync();
   const hash = bcryptjs.hashSync(password, salt);
 
   const userUpdated = await User.updateOne(
-    { passwordHash: token},
+    { passwordHash: token },
     { $set: { password: hash } },
     { new: true }
-  );  
-  
+  );
+
   res.status(200).send({
-    user: userUpdated    
+    user: userUpdated,
   });
 };
 
