@@ -90,6 +90,13 @@ const confirmAccount = async (req, res = response) => {
   try {
     const { token } = req.query;
     const tokenCF = await Token.findOne({ token });
+    let link;
+    if (process.env.NODE_ENV === "development") {
+      link = process.env.FRONT_URL_DEV;
+    }
+    if (process.env.NODE_ENV === "production") {
+      link = process.env.FRONT_URL_PROD;
+    }
     if (!tokenCF) {
       res.status(401).send({
         type: "not-verified",
@@ -97,25 +104,31 @@ const confirmAccount = async (req, res = response) => {
       });
     }
     const user = await User.findById(tokenCF.userId);
-    if (!user)
+    if (!user) {
+      global.io.emit("confirm", { msg: false });
       return res.status(400).send({
         type: "not-user",
         msg: "No hemos encontrado un usario para este token.",
       });
-    if (user.isVerified)
+    }
+    if (user.isVerified) {
+      global.io.emit("confirm", { msg: true });
       return res.status(400).send({
         type: "already-verified",
         msg: "This user has already been verified.",
       });
+    }
     // Verify and save the user
     user.isVerified = true;
     await user.save();
     global.io.emit("confirm", { msg: true });
-    res
+
+    res.redirect(`${link}/auth/confirmaccount/${user._id}?email=${user.email}`);
+    /*res
       .status(200)
       .send(
         "La cuenta ha sido verificada correctamente. Por favor inicie sesión."
-      );
+      );*/
   } catch (error) {
     global.io.emit("confirm", { msg: false });
 
