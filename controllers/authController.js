@@ -5,11 +5,13 @@ const { User, Rol, Token } = require("../models");
 
 const { generarJWT } = require("../helpers/generar_jwt");
 const { googleVerify } = require("../helpers/google-verify");
+const { generateRefreshToken, setTokenCookie } = require("../helpers/helper_refresh_token");
 const { sendConfirm } = require("./emailController");
 
 const login = async (req, res = response) => {
   //obtiene el email y la contraseña q se le envia
   const { email, password } = req.body;
+  const ipAddress = req.ip;
   try {
     // Verificar si el email existe
     const usuario = await User.findOne({ email }).populate("rol");
@@ -29,6 +31,11 @@ const login = async (req, res = response) => {
 
     // Generar el JWT
     const token = await generarJWT(usuario.id);
+    const refreshToken = generateRefreshToken(usuario, ipAddress);
+    // save refresh token
+    await refreshToken.save();
+
+    setTokenCookie(res, refreshToken);
 
     res.status(200).send({
       user: usuario,
@@ -74,6 +81,11 @@ const googleSignin = async (req, res = response) => {
 
     // Generar el JWT
     const token = await generarJWT(usuario.id);
+    const refreshToken = generateRefreshToken(usuario, ipAddress);
+    // save refresh token
+    await refreshToken.save();
+
+    setTokenCookie(res, refreshToken);
 
     res.status(200).send({
       user: usuario,
