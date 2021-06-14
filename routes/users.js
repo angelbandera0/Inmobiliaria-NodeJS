@@ -13,6 +13,8 @@ const {
   userGetById,
   misAgregaciones,
   misCasasFavoritas,
+  refreshToken,
+  revokeToken,
 } = require("../controllers/userController");
 
 /* Route users listing. */
@@ -22,7 +24,7 @@ router.get("/agregaciones/:id", misAgregaciones);
 
 router.get("/favoritas" , validarJWT,  misCasasFavoritas );
 
-router.get("/:id", userGetById);
+router.get("/:id",validarJWT, userGetById);
 
 router.post(
   "/",
@@ -38,6 +40,10 @@ router.post(
   ],
   userPost
 );
+
+router.post('/refresh-token', refreshToken);
+
+router.post('/revoke-token', revokeToken);
 
 router.put(
   "/:id",
