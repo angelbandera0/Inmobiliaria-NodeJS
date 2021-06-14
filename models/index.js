@@ -6,6 +6,8 @@ const Rol = require("./rol");
 const User = require("./user");
 const Like = require("./like");
 const Token = require("./token");
+const RefreshToken = require("./refresh-token.model");
+
 
 module.exports = {
   Cita,
@@ -16,4 +18,5 @@ module.exports = {
   User,
   Like,
   Token,
+  RefreshToken,
 };
