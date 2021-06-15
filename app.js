@@ -34,8 +34,16 @@ const app = express();
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
+//cors options
+var corsOptions = {
+  origin:
+    process.env.NODE_ENV === "development"
+      ? (link = process.env.FRONT_URL_DEV)
+      : (link = process.env.FRONT_URL_PROD), //servidor que deseas que consuma o (*) en caso que sea acceso libre
+  credentials: true,
+};
 //middlewares
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
