@@ -29,11 +29,11 @@ const userGetById = async (req = request, res = response) => {
   const { id } = req.params;
   const { usuario } = req;
 
-  if (id !== usuario._id && usuario.rol.rol !== "ADMIN_ROLE") {
+  /*if (id !== usuario._id && usuario.rol.rol !== "ADMIN_ROLE") {
     res.status(401).send({ message: 'Unauthorized' });    
-  }
+  }*/
 
-  const user = await User.findById(id);
+  const user = await User.findById(id).populate('rol');
 
   res.status(200).send({
     user: user,
@@ -41,11 +41,12 @@ const userGetById = async (req = request, res = response) => {
 };
 
 const refreshToken = (req, res = response, next) => {
+  console.log(req.cookies.refreshToken);
   const token = req.cookies.refreshToken;
   const ipAddress = req.ip;
   userService.refreshToken({ token, ipAddress })
       .then(({ refreshToken, ...user }) => {
-          setTokenCookie(res, refreshToken);
+          setTokenCookie(res, refreshToken.token);
           res.send(user);
       })
       .catch(next);

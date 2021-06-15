@@ -55,7 +55,7 @@ async function refreshToken({ token, ipAddress }) {
     // return basic details and tokens
     return { 
         user,
-        jwtToken,
+        token:jwtToken,
         refreshToken: newRefreshToken.token
     };
 }
@@ -75,12 +75,12 @@ async function getRefreshTokens(userId) {
     await getUser(userId);
 
     // return refresh tokens for user
-    const refreshTokens = await db.RefreshToken.find({ user: userId });
+    const refreshTokens = await db.RefreshToken.find({ user: userId }).populate({path:'user',populate:{path:"rol"}});
     return refreshTokens;
 }
 
 async function getUser(id) {
-    const user = await User.findById(id);
+    const user = await User.findById(id).populate('rol');
     if (!user) throw 'User not found';
     return user;
 }
@@ -88,7 +88,7 @@ async function getUser(id) {
 // helper functions
 
 async function getRefreshToken(token) {
-    const refreshToken = await RefreshToken.findOne({ token }).populate('user');
+    const refreshToken = await RefreshToken.findOne({ token }).populate({path:'user',populate:{path:"rol"}});
     if (!refreshToken || !refreshToken.isActive) throw 'Invalid token';
     return refreshToken;
 }

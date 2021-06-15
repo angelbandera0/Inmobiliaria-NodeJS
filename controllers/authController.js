@@ -35,11 +35,12 @@ const login = async (req, res = response) => {
     // save refresh token
     await refreshToken.save();
 
-    setTokenCookie(res, refreshToken);
+    setTokenCookie(res, refreshToken.token);
 
     res.status(200).send({
       user: usuario,
       token: token,
+      refreshToken
     });
   } catch (error) {
     console.log(error);
@@ -85,11 +86,12 @@ const googleSignin = async (req, res = response) => {
     // save refresh token
     await refreshToken.save();
 
-    setTokenCookie(res, refreshToken);
+    setTokenCookie(res, refreshToken.token);
 
     res.status(200).send({
       user: usuario,
       token: token,
+      refreshToken
     });
   } catch (error) {
     res.status(400).json({
