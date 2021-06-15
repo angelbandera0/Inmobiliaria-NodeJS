@@ -56,7 +56,7 @@ async function refreshToken({ token, ipAddress }) {
     return { 
         user,
         token:jwtToken,
-        refreshToken: newRefreshToken.token
+        refreshToken: newRefreshToken
     };
 }
 
