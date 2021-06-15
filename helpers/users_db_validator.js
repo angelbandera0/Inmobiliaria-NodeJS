@@ -26,7 +26,11 @@ const existUserById = async (id) => {
 
 const isVerified = async (email = "") => {
   const user = await User.findOne({ email });
-  console.log(user);
+  if(!user){
+    throw new Error(
+      `La cuenta con el correo: ${email}, no existe en la base de datos.`
+    );
+  }
   if (!user.isVerified) {
     console.log("object");
     throw new Error(
